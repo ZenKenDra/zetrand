@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZETRAND | Phygital Luxury & AI Virtual Try-On Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- MediaPipe Pose & Camera Utils -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            offwhite: '#FAF9F6',
+            aubergine: '#2E1035',
+            aubergineLight: '#461B50',
+            charcoal: '#18181B'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF9F6;
+      color: #18181B;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .brand-serif {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .active-nav {
+      background-color: #2E1035;
+      color: #FAF9F6;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #2E1035;
+      border-radius: 9999px;
+    }
+    /* CSS untuk memotong kaos tampak Depan (Kiri) atau Belakang (Kanan) tanpa terkena blokir CORS Canvas */
+    .crop-full {
+      object-fit: contain;
+      object-position: center;
+      width: 100%;
+    }
+    .crop-front {
+      object-fit: cover;
+      object-position: left center;
+      width: 100%;
+    }
+    .crop-back {
+      object-fit: cover;
+      object-position: right center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row bg-offwhite text-charcoal overflow-x-hidden">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-full md:w-72 bg-charcoal text-offwhite flex flex-col justify-between p-6 shrink-0 border-r border-aubergine/30">
+    <div>
+      <div class="mb-8 pb-6 border-b border-white/10">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-purple-300 font-semibold block mb-1">Phygital Ecosystem</span>
+        <h1 class="brand-serif text-4xl font-bold tracking-wider text-offwhite">ZETRAND</h1>
+        <p class="text-xs text-gray-400 mt-1">Zetrand Creative Lab • F&amp;B x Luxury Apparel</p>
+      </div>
+
+      <nav class="space-y-2">
+        <button onclick="switchTab('tryon')" id="nav-tryon" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between transition active-nav">
+          <span>1. AI Virtual Try-On</span>
+          <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">Dual-Mode</span>
+        </button>
+        <button onclick="switchTab('culinary')" id="nav-culinary" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
+          <span>2. Culinary &amp; Smart QR</span>
+          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">Cross-Retail</span>
+        </button>
+        <button onclick="switchTab('reels')" id="nav-reels" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
+          <span>3. Fashion &amp; Food Reels</span>
+          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">9:16 Feed</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-white/10 text-xs text-gray-400 space-y-1">
+      <div class="font-semibold text-offwhite">System Architecture</div>
+      <p>Bos Zen (CTO/CSO) &amp; Betrand (Commercial Lead)</p>
+      <p class="text-[11px] text-purple-300">Ranch Market &amp; Lai Lai Insider Network</p>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT WORKSPACE -->
+  <main class="flex-1 p-6 md:p-10 overflow-y-auto custom-scroll">
+
+    <!-- TAB 1: DUAL-MODE AI VIRTUAL TRY-ON -->
+    <section id="tab-tryon" class="space-y-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-charcoal/10 pb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-aubergine font-bold">ZETRAND Digital Atelier</span>
+          <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Dual-Mode AI Virtual Try-On</h2>
+          <p class="text-sm text-gray-600 mt-1">Uji koleksi pakaian ZETRAND secara real-time (MediaPipe 30 FPS) atau render fotorealistik (IDM-VTON HD).</p>
+        </div>
+
+        <div class="inline-flex bg-gray-200 p-1 rounded-xl self-start">
+          <button id="btn-mode-ar" onclick="setTryOnMode('ar')" class="px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition">
+            Mode Live AR (0 Detik / 30 FPS)
+          </button>
+          <button id="btn-mode-studio" onclick="setTryOnMode('studio')" class="px-4 py-2 rounded-lg text-xs font-semibold text-charcoal hover:bg-white/60 transition">
+            Mode Studio AI Render (HD 8-15 Detik)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+
+        <!-- LEFT COLUMN: GARMENT LIST, MODEL PRESET LIST & UPLOAD PANEL -->
+        <div class="xl:col-span-5 space-y-6">
+
+          <!-- Upload New Item to List Card -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-sm uppercase tracking-wider text-aubergine">Tambah / Upload ke Daftar Katalog</h3>
+              <span class="text-[11px] bg-aubergine/10 text-aubergine px-2.5 py-0.5 rounded-full font-medium">Auto-Sync List</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Item / Koleksi</label>
+                <input id="upload-title" type="text" placeholder="Contoh: Oversized Graphic Tee" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Kategori List</label>
+                <select id="upload-category" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine bg-white">
+                  <option value="garment">Koleksi Pakaian (Garment)</option>
+                  <option value="model">Foto Model / Target Tubuh</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-xs font-medium text-gray-600">Pilih File Lokal (Langsung Masuk List) atau Link Google Drive</label>
+              <input id="upload-file" type="file" accept="image/*" onchange="addNewItemToList()" class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-aubergine file:text-offwhite hover:file:bg-aubergineLight cursor-pointer" />
+              <div class="flex gap-2 pt-1">
+                <input id="upload-drive-url" type="text" placeholder="Atau tempel link Google Drive / URL gambar..." class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
+                <button onclick="addNewItemToList()" class="px-4 py-2 bg-charcoal text-offwhite text-xs font-semibold rounded-lg hover:bg-aubergine transition shrink-0">
+                  + Masuk List
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1. DAFTAR KOLEKSI PAKAIAN (GARMENT LIST) -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">1. Daftar Pakaian (Garment Try-On)</h3>
+                <p class="text-xs text-gray-500">Klik pakaian untuk ditempelkan ke Model atau Live AR</p>
+              </div>
+              <div class="flex items-center gap-1 bg-offwhite border border-gray-200 p-1 rounded-lg">
+                <button id="crop-full" onclick="setGarmentCrop('full')" class="px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white">Full</button>
+                <button id="crop-front" onclick="setGarmentCrop('front')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Depan (Kiri)</button>
+                <button id="crop-back" onclick="setGarmentCrop('back')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Belakang (Kanan)</button>
+              </div>
+            </div>
+
+            <div id="garment-list" class="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto custom-scroll pr-1"></div>
+          </div>
+
+          <!-- 2. DAFTAR FOTO MODEL / PRESET LOOKBOOK (MODEL LIST) -->
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">2. Daftar Foto Model &amp; Studio Lookbook</h3>
+                <p class="text-xs text-gray-500">Klik foto model untuk diuji pada layar Try-On di kanan</p>
+              </div>
+              <span id="model-count-badge" class="text-[11px] font-semibold text-aubergine">3 Preset</span>
+            </div>
+
+            <div id="model-list" class="grid grid-cols-3 gap-3 max-h-60 overflow-y-auto custom-scroll pr-1"></div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: DUAL-MODE VIEWPORT -->
+        <div class="xl:col-span-7 space-y-6">
+
+          <!-- MODE A: LIVE AR & INTERACTIVE OVERLAY VIEWPORT -->
+          <div id="viewport-ar" class="bg-charcoal text-offwhite p-6 rounded-2xl shadow-lg space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span class="text-[10px] uppercase tracking-widest text-purple-300 font-semibold">Google MediaPipe Pose • Client-Side 30 FPS</span>
+                <h3 class="text-lg font-bold">Live AR Virtual Mirror &amp; Model Tester</h3>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="startWebcamAR()" class="px-3.5 py-2 bg-aubergine hover:bg-aubergineLight text-offwhite text-xs font-semibold rounded-lg transition">
+                  Aktifkan Kamera Live AR
+                </button>
+                <button onclick="stopWebcamAR()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-offwhite text-xs font-medium rounded-lg transition">
+                  Mode Foto Preset
+                </button>
+              </div>
+            </div>
+
+            <!-- Interactive Layered Viewport (Bebas Blokir CORS Google Drive) -->
+            <div id="ar-stage" class="relative w-full aspect-[4/3] bg-black/90 rounded-xl overflow-hidden flex items-center justify-center border border-white/10 select-none">
+              <!-- Video & Canvas untuk Kamera Live AR -->
+              <video id="ar-video" class="hidden" playsinline></video>
+              <canvas id="ar-canvas" width="800" height="600" class="w-full h-full object-contain hidden"></canvas>
+
+              <!-- Layer 1: Foto Model (Tampil di Mode Preset) -->
+              <img id="stage-model-img" src="" alt="Model Target" referrerpolicy="no-referrer" class="w-full h-full object-contain z-10" />
+
+              <!-- Layer 2: Overlay Pakaian yang menempel otomatis di dada/bahu -->
+              <div id="stage-garment-wrapper" class="absolute z-20 pointer-events-none flex items-center justify-center transition-transform duration-75" style="width: 38%; height: 48%; top: 24%; left: 31%;">
+                <img id="stage-garment-img" src="" alt="Garment Overlay" referrerpolicy="no-referrer" class="h-full crop-full drop-shadow-2xl" style="opacity: 0.95;" />
+              </div>
+
+              <!-- Status Pill -->
+              <div id="ar-status" class="absolute top-3 left-3 z-30 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-purple-200 border border-white/10">
+                Mode Pratinjau Preset Model Aktif (Gambar dimuat langsung dari Google Drive)
+              </div>
+            </div>
+
+            <!-- Manual Fine-Tuning Controls for Overlay -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-white/10 text-xs">
+              <div>
+                <label class="flex justify-between text-gray-300 mb-1">
+                  <span>Skala Ukuran Baju</span>
+                  <span id="val-scale">100%</span>
+                </label>
+                <input id="slider-scale" type="range" min="50" max="170" value="100" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+              </div>
+              <div>
+                <label class="flex justify-between text-gray-300 mb-1">
+                  <span>Posisi Vertikal (Y)</span>
+                  <span id="val-offset-y">0 px</span>
+                </label>
+                <input id="slider-offset-y" type="range" min="-140" max="140" value="0" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+              </div>
+              <div>
+                <label class="flex justify-between text-gray-300 mb-1">
+                  <span>Transparansi Tekstur</span>
+                  <span id="val-opacity">95%</span>
+                </label>
+                <input id="slider-opacity" type="range" min="40" max="100" value="95" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+              </div>
+            </div>
+          </div>
+
+          <!-- MODE B: STUDIO AI RENDER (HUGGING FACE GRADIO IDM-VTON) -->
+          <div id="viewport-studio" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-charcoal/10 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
+              <div>
+                <span class="text-[10px] uppercase tracking-widest text-aubergine font-bold">Hugging Face Gradio Client • yisol/IDM-VTON</span>
+                <h3 class="text-lg font-bold text-charcoal">Studio AI Photorealistic Render (HD)</h3>
+              </div>
+              <span class="text-xs bg-aubergine/10 text-aubergine px-3 py-1 rounded-full font-semibold">Rp 0 / Free API Integration</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
+                <div class="text-xs font-bold uppercase text-gray-500">Target Tubuh / Model (`human_img`)</div>
+                <div id="studio-human-label" class="text-xs font-semibold text-charcoal truncate"></div>
+                <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
+                  <img id="studio-human-preview" src="" referrerpolicy="no-referrer" alt="Human Target" class="max-h-full object-contain" />
+                </div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
+                <div class="text-xs font-bold uppercase text-gray-500">Pakaian Pilihan (`garm_img`)</div>
+                <div id="studio-garment-label" class="text-xs font-semibold text-charcoal truncate"></div>
+                <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
+                  <img id="studio-garment-preview" src="" referrerpolicy="no-referrer" alt="Garment Target" class="max-h-full object-contain" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input id="vton-prompt" type="text" value="High-end luxury streetwear t-shirt, studio lighting, photorealistic cotton texture" class="flex-1 px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
+              <button onclick="runStudioVTON()" id="btn-run-vton" class="px-6 py-2.5 bg-aubergine hover:bg-aubergineLight text-offwhite text
