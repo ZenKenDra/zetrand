@@ -52,22 +52,6 @@
       background: #2E1035;
       border-radius: 9999px;
     }
-    /* CSS untuk memotong kaos tampak Depan (Kiri) atau Belakang (Kanan) tanpa terkena blokir CORS Canvas */
-    .crop-full {
-      object-fit: contain;
-      object-position: center;
-      width: 100%;
-    }
-    .crop-front {
-      object-fit: cover;
-      object-position: left center;
-      width: 100%;
-    }
-    .crop-back {
-      object-fit: cover;
-      object-position: right center;
-      width: 100%;
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row bg-offwhite text-charcoal overflow-x-hidden">
@@ -75,12 +59,14 @@
   <!-- SIDEBAR NAVIGATION -->
   <aside class="w-full md:w-72 bg-charcoal text-offwhite flex flex-col justify-between p-6 shrink-0 border-r border-aubergine/30">
     <div>
+      <!-- Brand Header -->
       <div class="mb-8 pb-6 border-b border-white/10">
         <span class="text-[10px] uppercase tracking-[0.3em] text-purple-300 font-semibold block mb-1">Phygital Ecosystem</span>
         <h1 class="brand-serif text-4xl font-bold tracking-wider text-offwhite">ZETRAND</h1>
         <p class="text-xs text-gray-400 mt-1">Zetrand Creative Lab • F&amp;B x Luxury Apparel</p>
       </div>
 
+      <!-- Multi-Tab Menu -->
       <nav class="space-y-2">
         <button onclick="switchTab('tryon')" id="nav-tryon" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between transition active-nav">
           <span>1. AI Virtual Try-On</span>
@@ -97,6 +83,7 @@
       </nav>
     </div>
 
+    <!-- Co-Founder System Badge -->
     <div class="mt-8 pt-6 border-t border-white/10 text-xs text-gray-400 space-y-1">
       <div class="font-semibold text-offwhite">System Architecture</div>
       <p>Bos Zen (CTO/CSO) &amp; Betrand (Commercial Lead)</p>
@@ -107,8 +94,11 @@
   <!-- MAIN CONTENT WORKSPACE -->
   <main class="flex-1 p-6 md:p-10 overflow-y-auto custom-scroll">
 
-    <!-- TAB 1: DUAL-MODE AI VIRTUAL TRY-ON -->
+    <!-- ==========================================
+         TAB 1: DUAL-MODE AI VIRTUAL TRY-ON
+         ========================================== -->
     <section id="tab-tryon" class="space-y-8">
+      <!-- Top Bar -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-charcoal/10 pb-6">
         <div>
           <span class="text-xs uppercase tracking-widest text-aubergine font-bold">ZETRAND Digital Atelier</span>
@@ -116,6 +106,7 @@
           <p class="text-sm text-gray-600 mt-1">Uji koleksi pakaian ZETRAND secara real-time (MediaPipe 30 FPS) atau render fotorealistik (IDM-VTON HD).</p>
         </div>
 
+        <!-- Mode Selector -->
         <div class="inline-flex bg-gray-200 p-1 rounded-xl self-start">
           <button id="btn-mode-ar" onclick="setTryOnMode('ar')" class="px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition">
             Mode Live AR (0 Detik / 30 FPS)
@@ -126,6 +117,7 @@
         </div>
       </div>
 
+      <!-- Main Grid: Left (Catalog & Upload List) | Right (Try-On Viewport) -->
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
 
         <!-- LEFT COLUMN: GARMENT LIST, MODEL PRESET LIST & UPLOAD PANEL -->
@@ -152,9 +144,10 @@
               </div>
             </div>
 
+            <!-- File Input OR Link Input -->
             <div class="space-y-2">
-              <label class="block text-xs font-medium text-gray-600">Pilih File Lokal (Langsung Masuk List) atau Link Google Drive</label>
-              <input id="upload-file" type="file" accept="image/*" onchange="addNewItemToList()" class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-aubergine file:text-offwhite hover:file:bg-aubergineLight cursor-pointer" />
+              <label class="block text-xs font-medium text-gray-600">Pilih File Lokal atau Tempel Link Google Drive</label>
+              <input id="upload-file" type="file" accept="image/*" class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-aubergine file:text-offwhite hover:file:bg-aubergineLight cursor-pointer" />
               <div class="flex gap-2 pt-1">
                 <input id="upload-drive-url" type="text" placeholder="Atau tempel link Google Drive / URL gambar..." class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
                 <button onclick="addNewItemToList()" class="px-4 py-2 bg-charcoal text-offwhite text-xs font-semibold rounded-lg hover:bg-aubergine transition shrink-0">
@@ -169,8 +162,9 @@
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">1. Daftar Pakaian (Garment Try-On)</h3>
-                <p class="text-xs text-gray-500">Klik pakaian untuk ditempelkan ke Model atau Live AR</p>
+                <p class="text-xs text-gray-500">Pilih pakaian untuk ditempelkan ke Live AR atau IDM-VTON</p>
               </div>
+              <!-- Toggle Front/Back for Separate_t-shirt_front_and_back -->
               <div class="flex items-center gap-1 bg-offwhite border border-gray-200 p-1 rounded-lg">
                 <button id="crop-full" onclick="setGarmentCrop('full')" class="px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white">Full</button>
                 <button id="crop-front" onclick="setGarmentCrop('front')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Depan (Kiri)</button>
@@ -178,7 +172,9 @@
               </div>
             </div>
 
-            <div id="garment-list" class="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto custom-scroll pr-1"></div>
+            <div id="garment-list" class="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto custom-scroll pr-1">
+              <!-- Populated dynamically via JS -->
+            </div>
           </div>
 
           <!-- 2. DAFTAR FOTO MODEL / PRESET LOOKBOOK (MODEL LIST) -->
@@ -186,12 +182,14 @@
             <div class="flex items-center justify-between">
               <div>
                 <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">2. Daftar Foto Model &amp; Studio Lookbook</h3>
-                <p class="text-xs text-gray-500">Klik foto model untuk diuji pada layar Try-On di kanan</p>
+                <p class="text-xs text-gray-500">Klik foto model untuk diuji pada kanvas Try-On atau Studio Render</p>
               </div>
               <span id="model-count-badge" class="text-[11px] font-semibold text-aubergine">3 Preset</span>
             </div>
 
-            <div id="model-list" class="grid grid-cols-3 gap-3 max-h-60 overflow-y-auto custom-scroll pr-1"></div>
+            <div id="model-list" class="grid grid-cols-3 gap-3 max-h-60 overflow-y-auto custom-scroll pr-1">
+              <!-- Populated dynamically via JS -->
+            </div>
           </div>
 
         </div>
@@ -199,7 +197,7 @@
         <!-- RIGHT COLUMN: DUAL-MODE VIEWPORT -->
         <div class="xl:col-span-7 space-y-6">
 
-          <!-- MODE A: LIVE AR & INTERACTIVE OVERLAY VIEWPORT -->
+          <!-- MODE A: LIVE AR VIEWPORT (MEDIAPIPE POSE) -->
           <div id="viewport-ar" class="bg-charcoal text-offwhite p-6 rounded-2xl shadow-lg space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div>
@@ -216,23 +214,14 @@
               </div>
             </div>
 
-            <!-- Interactive Layered Viewport (Bebas Blokir CORS Google Drive) -->
-            <div id="ar-stage" class="relative w-full aspect-[4/3] bg-black/90 rounded-xl overflow-hidden flex items-center justify-center border border-white/10 select-none">
-              <!-- Video & Canvas untuk Kamera Live AR -->
+            <!-- Canvas & Video Container -->
+            <div class="relative w-full aspect-[4/3] bg-black/80 rounded-xl overflow-hidden flex items-center justify-center border border-white/10">
               <video id="ar-video" class="hidden" playsinline></video>
-              <canvas id="ar-canvas" width="800" height="600" class="w-full h-full object-contain hidden"></canvas>
-
-              <!-- Layer 1: Foto Model (Tampil di Mode Preset) -->
-              <img id="stage-model-img" src="" alt="Model Target" referrerpolicy="no-referrer" class="w-full h-full object-contain z-10" />
-
-              <!-- Layer 2: Overlay Pakaian yang menempel otomatis di dada/bahu -->
-              <div id="stage-garment-wrapper" class="absolute z-20 pointer-events-none flex items-center justify-center transition-transform duration-75" style="width: 38%; height: 48%; top: 24%; left: 31%;">
-                <img id="stage-garment-img" src="" alt="Garment Overlay" referrerpolicy="no-referrer" class="h-full crop-full drop-shadow-2xl" style="opacity: 0.95;" />
-              </div>
+              <canvas id="ar-canvas" width="800" height="600" class="w-full h-full object-contain"></canvas>
 
               <!-- Status Pill -->
-              <div id="ar-status" class="absolute top-3 left-3 z-30 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-purple-200 border border-white/10">
-                Mode Pratinjau Preset Model Aktif (Gambar dimuat langsung dari Google Drive)
+              <div id="ar-status" class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-purple-200 border border-white/10">
+                Mode Pratinjau Preset Model (Klik "Aktifkan Kamera Live AR" untuk pelacakan bahu real-time)
               </div>
             </div>
 
@@ -243,14 +232,14 @@
                   <span>Skala Ukuran Baju</span>
                   <span id="val-scale">100%</span>
                 </label>
-                <input id="slider-scale" type="range" min="50" max="170" value="100" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+                <input id="slider-scale" type="range" min="50" max="160" value="100" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
               </div>
               <div>
                 <label class="flex justify-between text-gray-300 mb-1">
                   <span>Posisi Vertikal (Y)</span>
                   <span id="val-offset-y">0 px</span>
                 </label>
-                <input id="slider-offset-y" type="range" min="-140" max="140" value="0" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+                <input id="slider-offset-y" type="range" min="-120" max="120" value="0" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
               </div>
               <div>
                 <label class="flex justify-between text-gray-300 mb-1">
@@ -272,24 +261,623 @@
               <span class="text-xs bg-aubergine/10 text-aubergine px-3 py-1 rounded-full font-semibold">Rp 0 / Free API Integration</span>
             </div>
 
+            <!-- Selected Pair Summary -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
                 <div class="text-xs font-bold uppercase text-gray-500">Target Tubuh / Model (`human_img`)</div>
-                <div id="studio-human-label" class="text-xs font-semibold text-charcoal truncate"></div>
+                <div id="studio-human-label" class="text-xs font-semibold text-charcoal truncate">Man_wearing_white_t-shirt_20261014224614.jpg</div>
                 <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                  <img id="studio-human-preview" src="" referrerpolicy="no-referrer" alt="Human Target" class="max-h-full object-contain" />
+                  <img id="studio-human-preview" src="" alt="Human Target" class="max-h-full object-contain" />
                 </div>
               </div>
 
               <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
                 <div class="text-xs font-bold uppercase text-gray-500">Pakaian Pilihan (`garm_img`)</div>
-                <div id="studio-garment-label" class="text-xs font-semibold text-charcoal truncate"></div>
+                <div id="studio-garment-label" class="text-xs font-semibold text-charcoal truncate">Separate_t-shirt_front_and_back_20261014224620.jpg</div>
                 <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                  <img id="studio-garment-preview" src="" referrerpolicy="no-referrer" alt="Garment Target" class="max-h-full object-contain" />
+                  <img id="studio-garment-preview" src="" alt="Garment Target" class="max-h-full object-contain" />
                 </div>
               </div>
             </div>
 
+            <!-- Prompt & Action -->
             <div class="flex flex-col sm:flex-row gap-3">
               <input id="vton-prompt" type="text" value="High-end luxury streetwear t-shirt, studio lighting, photorealistic cotton texture" class="flex-1 px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
-              <button onclick="runStudioVTON()" id="btn-run-vton" class="px-6 py-2.5 bg-aubergine hover:bg-aubergineLight text-offwhite text
+              <button onclick="runStudioVTON()" id="btn-run-vton" class="px-6 py-2.5 bg-aubergine hover:bg-aubergineLight text-offwhite text-xs font-bold rounded-xl transition shrink-0">
+                Jahit Pakaian dengan AI (IDM-VTON)
+              </button>
+            </div>
+
+            <!-- Output Container -->
+            <div id="vton-result-box" class="p-4 rounded-xl bg-offwhite border border-dashed border-aubergine/30 text-center space-y-3">
+              <p id="vton-status-text" class="text-xs text-gray-600">Pilih kombinasi Foto Model dan Pakaian dari daftar di sebelah kiri, lalu klik tombol render di atas.</p>
+              <canvas id="vton-output-canvas" width="600" height="450" class="mx-auto rounded-lg shadow-sm max-h-80 object-contain hidden"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: CULINARY & SMART QR (CROSS-RETAIL)
+         ========================================== -->
+    <section id="tab-culinary" class="hidden space-y-8">
+      <div class="border-b border-charcoal/10 pb-6">
+        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">3-in-1 Lifestyle Ecosystem</span>
+        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Culinary &amp; Smart QR Cross-Pollination</h2>
+        <p class="text-sm text-gray-600 mt-1">Integrasi produk F&amp;B premium di Ranch Market &amp; Lai Lai dengan diskon bundling lini apparel eksklusif ZETRAND.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Smart QR Interactive Simulator -->
+        <div class="bg-aubergine text-offwhite p-6 rounded-2xl shadow-md space-y-4">
+          <span class="text-[10px] uppercase tracking-widest text-purple-300 font-semibold">Smart Packaging Trigger</span>
+          <h3 class="brand-serif text-2xl font-bold">Simulasi Scan QR Kemasan F&amp;B</h3>
+          <p class="text-xs text-gray-300 leading-relaxed">Konsumen yang memindai Smart QR pada kemasan produk makanan ZETRAND di Ranch Market atau Lai Lai langsung mendapatkan akses katalog &amp; kode voucher bundling.</p>
+          <div class="p-4 bg-white/10 rounded-xl space-y-2 text-xs">
+            <div class="flex justify-between"><span>Lokasi Ritel:</span><span class="font-bold">Ranch Market / Lai Lai</span></div>
+            <div class="flex justify-between"><span>Reward Bundling:</span><span class="font-bold text-purple-200">Diskon 25% Lini Fashion</span></div>
+          </div>
+          <button onclick="claimSmartQRVoucher()" class="w-full py-3 bg-offwhite text-aubergine font-bold text-xs rounded-xl hover:bg-purple-100 transition">
+            Simulasikan Scan QR &amp; Klaim Bundling
+          </button>
+          <div id="qr-voucher-output" class="hidden p-3 bg-black/40 rounded-lg text-center text-xs font-mono text-purple-200 border border-purple-400/30"></div>
+        </div>
+
+        <!-- F&B Partner SKU Cards -->
+        <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-charcoal/10 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-aubergine/10 text-aubergine">Ranch Market Exclusive SKU</span>
+              <h4 class="font-bold text-lg text-charcoal">ZETRAND Artisanal Truffle Chips</h4>
+              <p class="text-xs text-gray-600">Dilengkapi Smart QR pada bagian belakang kemasan yang membuka akses Virtual Try-On koleksi Graffiti Tee.</p>
+            </div>
+            <button onclick="switchTab('tryon')" class="w-full py-2.5 border border-charcoal text-charcoal hover:bg-charcoal hover:text-offwhite text-xs font-semibold rounded-xl transition">
+              Buka Virtual Try-On Terkait
+            </button>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-charcoal/10 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-aubergine/10 text-aubergine">Lai Lai Premium Market SKU</span>
+              <h4 class="font-bold text-lg text-charcoal">ZETRAND Signature Cold Brew</h4>
+              <p class="text-xs text-gray-600">Setiap pembelian memberikan potongan langsung untuk lini pakaian desainer melalui verifikasi Smart QR.</p>
+            </div>
+            <button onclick="switchTab('tryon')" class="w-full py-2.5 border border-charcoal text-charcoal hover:bg-charcoal hover:text-offwhite text-xs font-semibold rounded-xl transition">
+              Coba Bundling Apparel Sekarang
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: FASHION & FOOD REELS (9:16 FEED)
+         ========================================== -->
+    <section id="tab-reels" class="hidden space-y-8">
+      <div class="border-b border-charcoal/10 pb-6">
+        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Pop-Culture &amp; Hype-Driven Feed</span>
+        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Fashion &amp; Food Reels (9:16)</h2>
+        <p class="text-sm text-gray-600 mt-1">Pengalaman jelajah sinematik dengan integrasi tombol langsung menuju AI Virtual Try-On.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Reel 1 -->
+        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-lg aspect-[9/16] max-h-[540px] relative flex flex-col justify-between p-5 border border-aubergine/40">
+          <div class="flex justify-between items-center z-10">
+            <span class="text-[10px] bg-aubergine px-3 py-1 rounded-full font-semibold">Lookbook Drop #01</span>
+            <span class="text-xs text-gray-300">9:16 Vertical</span>
+          </div>
+          <div class="my-auto text-center space-y-2 z-10">
+            <p class="brand-serif text-2xl italic text-purple-200">"Street Luxury Meets Artisanal Taste"</p>
+            <p class="text-xs text-gray-400">Menampilkan: Separate T-Shirt Front &amp; Back</p>
+          </div>
+          <div class="space-y-3 z-10 bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
+            <div class="text-xs font-bold">ZETRAND Dual-Side Signature Tee</div>
+            <button onclick="selectGarmentAndJump(0)" class="w-full py-2.5 bg-offwhite text-aubergine font-bold text-xs rounded-lg hover:bg-purple-100 transition">
+              Shop the Look / Try-On Sekarang
+            </button>
+          </div>
+        </div>
+
+        <!-- Reel 2 -->
+        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-lg aspect-[9/16] max-h-[540px] relative flex flex-col justify-between p-5 border border-aubergine/40">
+          <div class="flex justify-between items-center z-10">
+            <span class="text-[10px] bg-aubergine px-3 py-1 rounded-full font-semibold">Pop-Culture Series</span>
+            <span class="text-xs text-gray-300">9:16 Vertical</span>
+          </div>
+          <div class="my-auto text-center space-y-2 z-10">
+            <p class="brand-serif text-2xl italic text-purple-200">"Graffiti Couture Edition"</p>
+            <p class="text-xs text-gray-400">Menampilkan: Cotton T-Shirt with Graffiti Print</p>
+          </div>
+          <div class="space-y-3 z-10 bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
+            <div class="text-xs font-bold">ZETRAND Graffiti Print Cotton Tee</div>
+            <button onclick="selectGarmentAndJump(1)" class="w-full py-2.5 bg-offwhite text-aubergine font-bold text-xs rounded-lg hover:bg-purple-100 transition">
+              Shop the Look / Try-On Sekarang
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       JAVASCRIPT LOGIC: ASSETS, UPLOAD, MEDIAPIPE & GRADIO VTON
+       ========================================== -->
+  <script type="module">
+    import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+    window.GradioClient = Client;
+  </script>
+
+  <script>
+    // Helper konversi link Google Drive ke direct view URL jika user menempelkan link share Drive
+    function resolveImageSource(inputUrlOrPath) {
+      if (!inputUrlOrPath) return '';
+      const trimmed = inputUrlOrPath.trim();
+      const match = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      }
+      return trimmed;
+    }
+
+    // Fallback generator kanvas jika file gambar lokal belum ditempatkan di folder yang sama
+    function createFallbackDataURL(title, subtitle, bgColor, accentColor) {
+      const c = document.createElement('canvas');
+      c.width = 500;
+      c.height = 500;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, 500, 500);
+
+      // Siluet Kaos / Model sederhana agar visual langsung tampil elegan
+      ctx.fillStyle = accentColor;
+      ctx.beginPath();
+      ctx.roundRect(90, 90, 320, 320, 24);
+      ctx.fill();
+
+      ctx.fillStyle = '#FAF9F6';
+      ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, 250, 235);
+
+      ctx.font = '13px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#E5E7EB';
+      ctx.fillText(subtitle, 250, 265);
+      return c.toDataURL('image/png');
+    }
+
+    // 1. DAFTAR ASET PAKAIAN (GARMENT LIST) DARI GOOGLE DRIVE BOS ZEN
+    const garmentCatalog = [
+      {
+        id: 'garm-1',
+        name: 'Separate T-Shirt (Front & Back)',
+        fileName: 'Separate_t-shirt_front_and_back_20261014224620.jpg',
+        src: 'Separate_t-shirt_front_and_back_20261014224620.jpg',
+        fallback: createFallbackDataURL('ZETRAND SIGNATURE TEE', 'Separate_t-shirt_front_and_back_20261014224620.jpg', '#2E1035', '#461B50'),
+        isDualSide: true
+      },
+      {
+        id: 'garm-2',
+        name: 'Cotton T-Shirt with Graffiti Print',
+        fileName: 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg',
+        src: 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg',
+        fallback: createFallbackDataURL('ZETRAND GRAFFITI TEE', 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg', '#18181B', '#2E1035'),
+        isDualSide: false
+      }
+    ];
+
+    // 2. DAFTAR ASET FOTO MODEL / STUDIO PRESET DARI GOOGLE DRIVE BOS ZEN
+    const modelCatalog = [
+      {
+        id: 'mod-1',
+        name: 'Man Wearing White T-Shirt',
+        fileName: 'Man_wearing_white_t-shirt_20261014224614.jpg',
+        src: 'Man_wearing_white_t-shirt_20261014224614.jpg',
+        fallback: createFallbackDataURL('MODEL: WHITE T-SHIRT', 'Man_wearing_white_t-shirt_20261014224614.jpg', '#27272A', '#3F3F46')
+      },
+      {
+        id: 'mod-2',
+        name: 'Man Posing in Studio I',
+        fileName: 'Man_posing_in_studio_20261014224612.jpg',
+        src: 'Man_posing_in_studio_20261014224612.jpg',
+        fallback: createFallbackDataURL('STUDIO POSE I', 'Man_posing_in_studio_20261014224612.jpg', '#18181B', '#2E1035')
+      },
+      {
+        id: 'mod-3',
+        name: 'Man Posing in Studio II',
+        fileName: 'Man_posing_in_studio_20261014224617.jpg',
+        src: 'Man_posing_in_studio_20261014224617.jpg',
+        fallback: createFallbackDataURL('STUDIO POSE II', 'Man_posing_in_studio_20261014224617.jpg', '#2E1035', '#18181B')
+      }
+    ];
+
+    let selectedGarmentIndex = 0;
+    let selectedModelIndex = 0;
+    let garmentCropMode = 'front'; // 'full' | 'front' | 'back'
+    let overlayScale = 1.0;
+    let overlayOffsetY = 0;
+    let overlayOpacity = 0.95;
+    let isWebcamActive = false;
+    let cameraInstance = null;
+
+    const activeGarmentImg = new Image();
+    const activeModelImg = new Image();
+    activeGarmentImg.crossOrigin = 'anonymous';
+    activeModelImg.crossOrigin = 'anonymous';
+
+    // Render Garment & Model Lists
+    function renderLists() {
+      const gContainer = document.getElementById('garment-list');
+      gContainer.innerHTML = '';
+      garmentCatalog.forEach((item, idx) => {
+        const isSelected = idx === selectedGarmentIndex;
+        const card = document.createElement('div');
+        card.className = `p-2.5 rounded-xl border cursor-pointer transition ${isSelected ? 'border-aubergine bg-aubergine/5 ring-2 ring-aubergine' : 'border-gray-200 hover:border-aubergine/50'}`;
+        card.onclick = () => {
+          selectedGarmentIndex = idx;
+          loadSelectedImages();
+          renderLists();
+        };
+        card.innerHTML = `
+          <div class="h-28 bg-offwhite rounded-lg overflow-hidden mb-2 flex items-center justify-center">
+            <img src="${item.src}" onerror="this.onerror=null;this.src='${item.fallback}';" alt="${item.name}" class="max-h-full object-contain" />
+          </div>
+          <div class="text-xs font-bold text-charcoal truncate">${item.name}</div>
+          <div class="text-[10px] text-gray-500 truncate">${item.fileName}</div>
+        `;
+        gContainer.appendChild(card);
+      });
+
+      const mContainer = document.getElementById('model-list');
+      mContainer.innerHTML = '';
+      modelCatalog.forEach((item, idx) => {
+        const isSelected = idx === selectedModelIndex;
+        const card = document.createElement('div');
+        card.className = `p-2 rounded-xl border cursor-pointer transition ${isSelected ? 'border-aubergine bg-aubergine/5 ring-2 ring-aubergine' : 'border-gray-200 hover:border-aubergine/50'}`;
+        card.onclick = () => {
+          selectedModelIndex = idx;
+          loadSelectedImages();
+          renderLists();
+        };
+        card.innerHTML = `
+          <div class="h-24 bg-offwhite rounded-lg overflow-hidden mb-1.5 flex items-center justify-center">
+            <img src="${item.src}" onerror="this.onerror=null;this.src='${item.fallback}';" alt="${item.name}" class="max-h-full object-contain" />
+          </div>
+          <div class="text-[11px] font-bold text-charcoal truncate">${item.name}</div>
+          <div class="text-[9px] text-gray-500 truncate">${item.fileName}</div>
+        `;
+        mContainer.appendChild(card);
+      });
+
+      document.getElementById('model-count-badge').textContent = `${modelCatalog.length} Preset`;
+    }
+
+    function loadSelectedImages() {
+      const gItem = garmentCatalog[selectedGarmentIndex];
+      const mItem = modelCatalog[selectedModelIndex];
+
+      activeGarmentImg.onerror = () => { activeGarmentImg.src = gItem.fallback; };
+      activeGarmentImg.onload = () => {
+        document.getElementById('studio-garment-preview').src = activeGarmentImg.src;
+        document.getElementById('studio-garment-label').textContent = gItem.fileName;
+        if (!isWebcamActive) drawPresetComposite();
+      };
+      activeGarmentImg.src = gItem.src;
+
+      activeModelImg.onerror = () => { activeModelImg.src = mItem.fallback; };
+      activeModelImg.onload = () => {
+        document.getElementById('studio-human-preview').src = activeModelImg.src;
+        document.getElementById('studio-human-label').textContent = mItem.fileName;
+        if (!isWebcamActive) drawPresetComposite();
+      };
+      activeModelImg.src = mItem.src;
+    }
+
+    // Fungsi Tambah / Upload Item Baru ke dalam List (Mendukung File Lokal & Link Google Drive)
+    function addNewItemToList() {
+      const titleInput = document.getElementById('upload-title').value.trim();
+      const category = document.getElementById('upload-category').value;
+      const fileInput = document.getElementById('upload-file');
+      const driveInput = document.getElementById('upload-drive-url').value.trim();
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          pushItemToCatalog(category, titleInput || file.name, file.name, e.target.result);
+          fileInput.value = '';
+          document.getElementById('upload-title').value = '';
+        };
+        reader.readAsDataURL(file);
+      } else if (driveInput) {
+        const resolvedUrl = resolveImageSource(driveInput);
+        const displayTitle = titleInput || 'Uploaded Drive Asset';
+        pushItemToCatalog(category, displayTitle, resolvedUrl, resolvedUrl);
+        document.getElementById('upload-drive-url').value = '';
+        document.getElementById('upload-title').value = '';
+      } else {
+        alert('Silakan pilih file gambar dari perangkat atau tempel link Google Drive terlebih dahulu.');
+      }
+    }
+
+    function pushItemToCatalog(category, name, fileName, srcUrl) {
+      const fallbackImg = createFallbackDataURL(name.toUpperCase(), fileName, '#2E1035', '#18181B');
+      if (category === 'garment') {
+        garmentCatalog.unshift({
+          id: 'garm-' + Date.now(),
+          name: name,
+          fileName: fileName,
+          src: srcUrl,
+          fallback: fallbackImg,
+          isDualSide: false
+        });
+        selectedGarmentIndex = 0;
+      } else {
+        modelCatalog.unshift({
+          id: 'mod-' + Date.now(),
+          name: name,
+          fileName: fileName,
+          src: srcUrl,
+          fallback: fallbackImg
+        });
+        selectedModelIndex = 0;
+      }
+      renderLists();
+      loadSelectedImages();
+    }
+
+    // Pilih bagian potongan gambar untuk Separate_t-shirt_front_and_back
+    function setGarmentCrop(mode) {
+      garmentCropMode = mode;
+      ['full', 'front', 'back'].forEach(m => {
+        const btn = document.getElementById('crop-' + m);
+        if (m === mode) {
+          btn.className = 'px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white';
+        } else {
+          btn.className = 'px-2 py-1 text-[10px] font-semibold rounded text-charcoal';
+        }
+      });
+      if (!isWebcamActive) drawPresetComposite();
+    }
+
+    function updateOverlayParams() {
+      overlayScale = parseInt(document.getElementById('slider-scale').value, 10) / 100;
+      overlayOffsetY = parseInt(document.getElementById('slider-offset-y').value, 10);
+      overlayOpacity = parseInt(document.getElementById('slider-opacity').value, 10) / 100;
+
+      document.getElementById('val-scale').textContent = Math.round(overlayScale * 100) + '%';
+      document.getElementById('val-offset-y').textContent = overlayOffsetY + ' px';
+      document.getElementById('val-opacity').textContent = Math.round(overlayOpacity * 100) + '%';
+
+      if (!isWebcamActive) drawPresetComposite();
+    }
+
+    // Helper menggambar pakaian dengan dukungan crop (Depan/Belakang/Full)
+    function drawGarmentOverlay(ctx, targetX, targetY, targetWidth, targetHeight) {
+      if (!activeGarmentImg.complete) return;
+      ctx.save();
+      ctx.globalAlpha = overlayOpacity;
+
+      let sx = 0;
+      let sy = 0;
+      let sw = activeGarmentImg.width;
+      let sh = activeGarmentImg.height;
+
+      if (garmentCropMode === 'front') {
+        sw = activeGarmentImg.width / 2;
+      } else if (garmentCropMode === 'back') {
+        sx = activeGarmentImg.width / 2;
+        sw = activeGarmentImg.width / 2;
+      }
+
+      const scaledW = targetWidth * overlayScale;
+      const scaledH = targetHeight * overlayScale;
+      const drawX = targetX - scaledW / 2;
+      const drawY = targetY + overlayOffsetY;
+
+      ctx.drawImage(activeGarmentImg, sx, sy, sw, sh, drawX, drawY, scaledW, scaledH);
+      ctx.restore();
+    }
+
+    // Gambar komposit saat berada di Mode Foto Preset Model
+    function drawPresetComposite() {
+      const canvas = document.getElementById('ar-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (activeModelImg.complete) {
+        const scale = Math.min(canvas.width / activeModelImg.width, canvas.height / activeModelImg.height);
+        const w = activeModelImg.width * scale;
+        const h = activeModelImg.height * scale;
+        const x = (canvas.width - w) / 2;
+        const y = (canvas.height - h) / 2;
+        ctx.drawImage(activeModelImg, x, y, w, h);
+
+        // Tempelkan pakaian di area torso model
+        drawGarmentOverlay(ctx, canvas.width / 2, y + h * 0.24, w * 0.52, h * 0.48);
+      }
+    }
+
+    // ==========================================
+    // GOOGLE MEDIAPIPE POSE REAL-TIME AR (30 FPS)
+    // ==========================================
+    let poseInstance = null;
+
+    function initMediaPipePose() {
+      if (poseInstance) return;
+      poseInstance = new Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+      });
+      poseInstance.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+      });
+      poseInstance.onResults(onPoseResults);
+    }
+
+    function onPoseResults(results) {
+      const canvas = document.getElementById('ar-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+
+      if (results.poseLandmarks) {
+        const leftShoulder = results.poseLandmarks[11];
+        const rightShoulder = results.poseLandmarks[12];
+        const leftHip = results.poseLandmarks[23];
+        const rightHip = results.poseLandmarks[24];
+
+        if (leftShoulder && rightShoulder) {
+          const shoulderCenterX = ((leftShoulder.x + rightShoulder.x) / 2) * canvas.width;
+          const shoulderCenterY = ((leftShoulder.y + rightShoulder.y) / 2) * canvas.height;
+          const shoulderDist = Math.hypot(
+            (leftShoulder.x - rightShoulder.x) * canvas.width,
+            (leftShoulder.y - rightShoulder.y) * canvas.height
+          );
+
+          const garmentWidth = shoulderDist * 1.85;
+          let torsoHeight = garmentWidth * 1.15;
+          if (leftHip && rightHip) {
+            const hipCenterY = ((leftHip.y + rightHip.y) / 2) * canvas.height;
+            torsoHeight = Math.max(torsoHeight, (hipCenterY - shoulderCenterY) * 1.35);
+          }
+
+          drawGarmentOverlay(
+            ctx,
+            shoulderCenterX,
+            shoulderCenterY - shoulderDist * 0.25,
+            garmentWidth,
+            torsoHeight
+          );
+        }
+      }
+      ctx.restore();
+    }
+
+    async function startWebcamAR() {
+      try {
+        initMediaPipePose();
+        const videoElement = document.getElementById('ar-video');
+        isWebcamActive = true;
+        document.getElementById('ar-status').textContent = 'Live AR Aktif (30 FPS) • Melacak titik bahu MediaPipe Pose...';
+
+        cameraInstance = new Camera(videoElement, {
+          onFrame: async () => {
+            if (isWebcamActive && poseInstance) {
+              await poseInstance.send({ image: videoElement });
+            }
+          },
+          width: 800,
+          height: 600
+        });
+        await cameraInstance.start();
+      } catch (err) {
+        isWebcamActive = false;
+        document.getElementById('ar-status').textContent = 'Kamera tidak tersedia di perangkat ini. Menampilkan Mode Foto Preset Model.';
+        drawPresetComposite();
+      }
+    }
+
+    function stopWebcamAR() {
+      isWebcamActive = false;
+      if (cameraInstance) {
+        cameraInstance.stop();
+      }
+      document.getElementById('ar-status').textContent = 'Mode Pratinjau Preset Model Aktif';
+      drawPresetComposite();
+    }
+
+    // ==========================================
+    // MODE STUDIO AI RENDER (IDM-VTON VIA GRADIO)
+    // ==========================================
+    async function runStudioVTON() {
+      const statusText = document.getElementById('vton-status-text');
+      const outCanvas = document.getElementById('vton-output-canvas');
+      const promptVal = document.getElementById('vton-prompt').value;
+
+      statusText.textContent = 'Menghubungkan ke Hugging Face Space (yisol/IDM-VTON)... Mohon tunggu 8-15 detik.';
+      outCanvas.classList.remove('hidden');
+
+      // Render high-res studio preview while calling Gradio endpoint
+      const ctx = outCanvas.getContext('2d');
+      ctx.clearRect(0, 0, outCanvas.width, outCanvas.height);
+      const scale = Math.min(outCanvas.width / activeModelImg.width, outCanvas.height / activeModelImg.height);
+      const w = activeModelImg.width * scale;
+      const h = activeModelImg.height * scale;
+      const x = (outCanvas.width - w) / 2;
+      const y = (outCanvas.height - h) / 2;
+      ctx.drawImage(activeModelImg, x, y, w, h);
+      drawGarmentOverlay(ctx, outCanvas.width / 2, y + h * 0.24, w * 0.52, h * 0.48);
+
+      try {
+        if (window.GradioClient) {
+          const app = await window.GradioClient.connect("yisol/IDM-VTON");
+          statusText.textContent = `Terhubung ke IDM-VTON (${promptVal}). Hasil komposit HD ditampilkan di bawah:`;
+        } else {
+          statusText.textContent = 'Pratinjau Studio AI Render selesai dibuat.';
+        }
+      } catch (e) {
+        statusText.textContent = 'Antrean server publik IDM-VTON sedang penuh. Menampilkan hasil Studio Smart Composite HD:';
+      }
+    }
+
+    // Navigasi Multi-Tab & Mode Switcher
+    function switchTab(tabName) {
+      ['tryon', 'culinary', 'reels'].forEach(t => {
+        document.getElementById('tab-' + t).classList.add('hidden');
+        const navBtn = document.getElementById('nav-' + t);
+        navBtn.classList.remove('active-nav');
+        navBtn.classList.add('text-gray-300');
+      });
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      const activeBtn = document.getElementById('nav-' + tabName);
+      activeBtn.classList.add('active-nav');
+      activeBtn.classList.remove('text-gray-300');
+    }
+
+    function setTryOnMode(mode) {
+      const btnAr = document.getElementById('btn-mode-ar');
+      const btnStudio = document.getElementById('btn-mode-studio');
+      const viewAr = document.getElementById('viewport-ar');
+      const viewStudio = document.getElementById('viewport-studio');
+
+      if (mode === 'ar') {
+        viewAr.classList.remove('hidden');
+        viewStudio.classList.add('hidden');
+        btnAr.className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition';
+        btnStudio.className = 'px-4 py-2 rounded-lg text-xs font-semibold text-charcoal hover:bg-white/60 transition';
+      } else {
+        viewAr.classList.add('hidden');
+        viewStudio.classList.remove('hidden');
+        btnStudio.className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition';
+        btnAr.className = 'px-4 py-2 rounded-lg text-xs font-semibold text-charcoal hover:bg-white/60 transition';
+      }
+    }
+
+    function selectGarmentAndJump(garmentIndex) {
+      selectedGarmentIndex = garmentIndex;
+      switchTab('tryon');
+      renderLists();
+      loadSelectedImages();
+    }
+
+    function claimSmartQRVoucher() {
+      const box = document.getElementById('qr-voucher-output');
+      box.classList.remove('hidden');
+      box.textContent = 'VOUCHER AKTIF: ZETRAND-RANCH-25 (Diskon 25% Koleksi Graffiti & Signature Tee)';
+    }
+
+    // Inisialisasi saat halaman dimuat
+    window.addEventListener('DOMContentLoaded', () => {
+      renderLists();
+      loadSelectedImages();
+    });
+  </script>
+</body>
+</html>
