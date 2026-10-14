@@ -1,788 +1,1060 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZETRAND | High-End Phygital F&B & Fashion Ecosystem</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZETRAND | Phygital Luxury Ecosystem</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cormorant Garamond (Editorial Luxury) & Plus Jakarta Sans (Clean Modern) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            offwhite: '#FAF9F6',
-            aubergine: '#2E1035',
-            aubergineLight: '#461B50',
-            lilac: '#E9D5FF',
-            charcoal: '#18181B'
-          },
-          fontFamily: {
-            serif: ['"Cormorant Garamond"', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'sans-serif']
-          }
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zetBg: '#FAF9F6',       /* Warm Off-White */
+                        zetPrimary: '#2E1035',  /* Deep Aubergine */
+                        zetLilac: '#E9D5FF',    /* Soft Lilac */
+                        zetText: '#18181B',     /* Charcoal Pekat */
+                        zetSurface: '#F3F1EC',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
         }
-      }
-    };
-  </script>
+    </script>
 
-  <style>
-    body { background-color: #FAF9F6; color: #18181B; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .brand-serif { font-family: 'Cormorant Garamond', serif; }
-    .active-nav-desktop { background-color: #2E1035; color: #FAF9F6; border-left: 4px solid #E9D5FF; }
-    .active-nav-mobile { color: #E9D5FF; background-color: rgba(233, 213, 255, 0.15); }
-    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #2E1035; border-radius: 9999px; }
-    .crop-full { object-fit: contain; object-position: center; width: 100%; }
-    .crop-front { object-fit: cover; object-position: left center; width: 100%; }
-    .crop-back { object-fit: cover; object-position: right center; width: 100%; }
-    .blend-multiply { mix-blend-mode: multiply; }
-    .reels-snap { scroll-snap-type: y mandatory; }
-    .reels-item { scroll-snap-align: start; }
-  </style>
+    <style>
+        body {
+            background-color: #FAF9F6;
+            color: #18181B;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .font-editorial {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        /* Hide scrollbars for clean editorial look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Snap scroll for Reels */
+        .reels-container {
+            scroll-snap-type: y mandatory;
+        }
+        .reel-item {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row bg-offwhite text-charcoal pb-20 md:pb-0 overflow-x-hidden">
+<body class="min-h-screen flex flex-col md:flex-row bg-zetBg text-zetText selection:bg-zetPrimary selection:text-white overflow-x-hidden">
 
-  <!-- DESKTOP FIXED SIDEBAR -->
-  <aside class="hidden md:flex md:w-72 bg-charcoal text-offwhite flex-col justify-between p-6 shrink-0 border-r border-aubergine/30 sticky top-0 h-screen">
-    <div>
-      <div class="mb-8 pb-6 border-b border-white/10">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-lilac font-semibold block mb-1">Phygital Ecosystem</span>
-        <h1 class="brand-serif text-4xl font-bold tracking-wider text-offwhite">ZETRAND</h1>
-        <p class="text-xs text-gray-400 mt-1">Zetrand Creative Lab • F&amp;B x Luxury Apparel</p>
-      </div>
-
-      <nav class="space-y-2">
-        <button onclick="switchTab('tryon')" id="nav-desktop-tryon" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between transition active-nav-desktop">
-          <span>1. AI Virtual Try-On Studio</span>
-          <span class="text-[10px] bg-lilac/20 text-lilac px-2 py-0.5 rounded-full">Dual-AI</span>
-        </button>
-        <button onclick="switchTab('culinary')" id="nav-desktop-culinary" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
-          <span>2. Culinary &amp; Smart QR Origin</span>
-          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">F&amp;B SKU</span>
-        </button>
-        <button onclick="switchTab('reels')" id="nav-desktop-reels" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
-          <span>3. Runway &amp; Taste Reels</span>
-          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">9:16 Feed</span>
-        </button>
-        <button onclick="switchTab('vip')" id="nav-desktop-vip" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
-          <span>4. VIP QR Claim &amp; Loyalty</span>
-          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">CRM DB</span>
-        </button>
-      </nav>
-    </div>
-
-    <div class="pt-6 border-t border-white/10 text-xs text-gray-400 space-y-1.5">
-      <div class="font-semibold text-lilac uppercase tracking-wider text-[10px]">Co-Founder Architecture</div>
-      <p class="text-[11px] text-offwhite font-medium">Bos Zen (CTO/CSO) &amp; Betrand (Commercial Lead)</p>
-      <p class="text-[10px] text-gray-400">Ranch Market &amp; Lai Lai Insider Network</p>
-    </div>
-  </aside>
-
-  <!-- MOBILE HEADER & BOTTOM NAVIGATION BAR -->
-  <header class="md:hidden bg-charcoal text-offwhite px-5 py-4 flex items-center justify-between border-b border-aubergine">
-    <div>
-      <span class="text-[9px] uppercase tracking-[0.25em] text-lilac block">Zetrand Creative Lab</span>
-      <h1 class="brand-serif text-2xl font-bold tracking-wider">ZETRAND</h1>
-    </div>
-    <span class="text-[10px] bg-aubergine text-lilac px-3 py-1 rounded-full font-semibold border border-lilac/30">Phygital SPA</span>
-  </header>
-
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-offwhite border-t border-white/15 grid grid-cols-4 px-2 py-1.5 shadow-2xl">
-    <button onclick="switchTab('tryon')" id="nav-mobile-tryon" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-semibold active-nav-mobile">1. Try-On</button>
-    <button onclick="switchTab('culinary')" id="nav-mobile-culinary" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-medium text-gray-400">2. Culinary</button>
-    <button onclick="switchTab('reels')" id="nav-mobile-reels" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-medium text-gray-400">3. Reels 9:16</button>
-    <button onclick="switchTab('vip')" id="nav-mobile-vip" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-medium text-gray-400">4. VIP Claim</button>
-  </nav>
-
-  <!-- MAIN WORKSPACE -->
-  <main class="flex-1 p-5 md:p-10 overflow-y-auto custom-scroll">
-
-    <!-- ==========================================
-         TAB 1: AI VIRTUAL TRY-ON STUDIO
-         ========================================== -->
-    <section id="tab-tryon" class="space-y-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-charcoal/10 pb-6">
+    <aside class="hidden md:flex md:flex-col md:w-72 md:fixed md:inset-y-0 md:left-0 bg-zetPrimary text-white z-40 justify-between p-8 border-r border-white/10 select-none">
         <div>
-          <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 1 • ZETRAND Digital Atelier</span>
-          <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">AI Virtual Try-On Studio</h2>
-          <p class="text-sm text-gray-600 mt-1">Mode 1: Live AR 30 FPS dengan rotasi bahu otomatis (MediaPipe Pose) • Mode 2: Generative VTON (IDM-VTON).</p>
-        </div>
-
-        <div class="inline-flex bg-charcoal/10 p-1.5 rounded-xl self-start">
-          <button id="btn-mode-ar" onclick="setTryOnMode('ar')" class="px-4 py-2.5 rounded-lg text-xs font-bold bg-aubergine text-offwhite shadow-sm transition">
-            Mode 1: Live AR Overlay (0 Detik)
-          </button>
-          <button id="btn-mode-studio" onclick="setTryOnMode('studio')" class="px-4 py-2.5 rounded-lg text-xs font-bold text-charcoal hover:bg-white/60 transition">
-            Mode 2: Studio HD AI Render (IDM-VTON)
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        <!-- LEFT PANEL: UPLOAD, CATALOG & VOUCHER -->
-        <div class="xl:col-span-5 space-y-6">
-
-          <!-- Upload Aset ke List -->
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
-            <div class="flex items-center justify-between">
-              <h3 class="font-bold text-xs uppercase tracking-wider text-aubergine">Tambah / Upload ke Daftar Katalog</h3>
-              <span class="text-[10px] bg-lilac text-aubergine px-2.5 py-0.5 rounded-full font-bold">Auto-Sync</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input id="upload-title" type="text" placeholder="Nama Koleksi / Model" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
-              <select id="upload-category" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine bg-white">
-                <option value="garment">Koleksi Pakaian (Garment)</option>
-                <option value="model">Foto Model / Target Tubuh</option>
-              </select>
-            </div>
-            <div class="space-y-2">
-              <input id="upload-file" type="file" accept="image/*" onchange="addNewItemToList()" class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-aubergine file:text-offwhite cursor-pointer" />
-              <div class="flex gap-2">
-                <input id="upload-drive-url" type="text" placeholder="Atau tempel link Google Drive / URL gambar..." class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
-                <button onclick="addNewItemToList()" class="px-4 py-2 bg-charcoal text-offwhite text-xs font-semibold rounded-lg hover:bg-aubergine transition shrink-0">+ Masuk List</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 1. Katalog Pakaian (currentGarment) -->
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 class="font-bold text-xs uppercase tracking-wider text-charcoal">1. Katalog Pakaian (`currentGarment`)</h3>
-                <p class="text-[11px] text-gray-500">Klik kartu untuk mengganti pakaian aktif</p>
-              </div>
-              <div class="flex items-center gap-1 bg-offwhite border border-gray-200 p-1 rounded-lg">
-                <button id="crop-full" onclick="setGarmentCrop('full')" class="px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white">Full</button>
-                <button id="crop-front" onclick="setGarmentCrop('front')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Depan (Kiri)</button>
-                <button id="crop-back" onclick="setGarmentCrop('back')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Belakang (Kanan)</button>
-              </div>
-            </div>
-            <div id="garment-list" class="grid grid-cols-2 gap-3 max-h-60 overflow-y-auto custom-scroll pr-1"></div>
-          </div>
-
-          <!-- 2. Daftar Foto Model Preset -->
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="font-bold text-xs uppercase tracking-wider text-charcoal">2. Preset Model &amp; Studio Lookbook</h3>
-                <p class="text-[11px] text-gray-500">Klik model untuk simulasi cepat atau input Studio HD</p>
-              </div>
-              <span id="model-count-badge" class="text-[11px] font-bold text-aubergine bg-lilac/40 px-2.5 py-0.5 rounded-full">3 Preset</span>
-            </div>
-            <div id="model-list" class="grid grid-cols-3 gap-3 max-h-56 overflow-y-auto custom-scroll pr-1"></div>
-          </div>
-
-          <!-- Kotak Klaim Voucher Bundling F&B -->
-          <div class="bg-aubergine text-offwhite p-5 rounded-2xl shadow-md space-y-3 border border-lilac/20">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] uppercase tracking-widest text-lilac font-bold">Cross-Selling Bundling</span>
-              <span class="text-[10px] bg-white/15 px-2.5 py-0.5 rounded-full">Ranch Market &amp; Lai Lai</span>
-            </div>
-            <h4 class="brand-serif text-xl font-bold">Klaim Voucher Kemasan Makanan</h4>
-            <p class="text-xs text-gray-300">Masukkan kode unik dari kemasan F&amp;B ZETRAND untuk diskon 25% pembelian pakaian ini.</p>
-            <div class="flex gap-2">
-              <input id="quick-voucher-input" type="text" value="ZETRAND-RANCH25" class="flex-1 px-3 py-2 text-xs rounded-lg bg-white/10 border border-lilac/30 text-offwhite focus:outline-none" />
-              <button onclick="applyQuickBundlingVoucher()" class="px-4 py-2 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition shrink-0">Klaim Diskon</button>
-            </div>
-            <div id="quick-voucher-msg" class="hidden text-xs text-lilac font-medium pt-1"></div>
-          </div>
-        </div>
-
-        <!-- RIGHT PANEL: VIEWPORT MODE 1 & MODE 2 -->
-        <div class="xl:col-span-7 space-y-6">
-
-          <!-- MODE 1: LIVE AR OVERLAY -->
-          <div id="viewport-ar" class="bg-charcoal text-offwhite p-6 rounded-2xl shadow-lg space-y-4 border border-aubergine">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] uppercase tracking-widest text-lilac font-semibold">Mode 1 • MediaPipe Pose Landmarks [11, 12, 23, 24]</span>
-                <h3 class="text-lg font-bold">Live AR Overlay &amp; Sudut Bahu Dinamis</h3>
-              </div>
-              <div class="flex flex-wrap items-center gap-2">
-                <button onclick="startWebcamAR()" class="px-3.5 py-2 bg-aubergine hover:bg-aubergineLight border border-lilac/40 text-offwhite text-xs font-semibold rounded-lg transition">
-                  Aktifkan Webcam Live AR
-                </button>
-                <button onclick="stopWebcamAR()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-offwhite text-xs font-medium rounded-lg transition">
-                  Mode Foto Model
-                </button>
-                <button onclick="toggleMultiplyBlend()" id="btn-blend" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-lilac text-xs font-medium rounded-lg transition">
-                  Multiply Blend: OFF
-                </button>
-              </div>
-            </div>
-
-            <div id="ar-stage" class="relative w-full aspect-[4/3] bg-black/95 rounded-xl overflow-hidden flex items-center justify-center border border-white/10 select-none">
-              <video id="ar-video" class="hidden" playsinline></video>
-              <canvas id="ar-canvas" width="800" height="600" class="w-full h-full object-contain hidden"></canvas>
-
-              <!-- Layer 1: Foto Model -->
-              <img id="stage-model-img" src="" alt="Model Target" referrerpolicy="no-referrer" class="w-full h-full object-contain z-10" />
-
-              <!-- Layer 2: Dynamic Garment Overlay -->
-              <div id="stage-garment-wrapper" class="absolute z-20 pointer-events-none flex items-center justify-center transition-transform duration-75" style="width: 38%; height: 48%; top: 24%; left: 31%;">
-                <img id="stage-garment-img" src="" alt="Garment Overlay" referrerpolicy="no-referrer" class="h-full crop-full drop-shadow-2xl" style="opacity: 0.95;" />
-              </div>
-
-              <div id="ar-status" class="absolute top-3 left-3 z-30 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-lilac border border-white/10">
-                Mode Pratinjau Model Aktif • Klik "Aktifkan Webcam Live AR" untuk deteksi tubuh
-              </div>
-              <div id="ar-telemetry" class="absolute bottom-3 right-3 z-30 bg-black/75 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-mono text-gray-300 border border-white/10">
-                Sudut Bahu: 0.0° | Skala: 100%
-              </div>
-            </div>
-
-            <!-- Kalibrasi Manual -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-white/10 text-xs">
-              <div>
-                <label class="flex justify-between text-gray-300 mb-1"><span>Skala Lebar Baju</span><span id="val-scale">100%</span></label>
-                <input id="slider-scale" type="range" min="50" max="170" value="100" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
-              </div>
-              <div>
-                <label class="flex justify-between text-gray-300 mb-1"><span>Offset Vertikal (Y)</span><span id="val-offset-y">0 px</span></label>
-                <input id="slider-offset-y" type="range" min="-140" max="140" value="0" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
-              </div>
-              <div>
-                <label class="flex justify-between text-gray-300 mb-1"><span>Opasitas Pakaian</span><span id="val-opacity">95%</span></label>
-                <input id="slider-opacity" type="range" min="40" max="100" value="95" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
-              </div>
-            </div>
-          </div>
-
-          <!-- MODE 2: STUDIO HD AI RENDER (GRADIO IDM-VTON BLOB PIPELINE) -->
-          <div id="viewport-studio" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-charcoal/10 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
-              <div>
-                <span class="text-[10px] uppercase tracking-widest text-aubergine font-bold">Mode 2 • Gradio Client (`yisol/IDM-VTON` &amp; `Kolors-Virtual-Try-On`)</span>
-                <h3 class="text-lg font-bold text-charcoal">Studio HD Photorealistic AI Render</h3>
-              </div>
-              <span class="text-xs bg-lilac/50 text-aubergine px-3 py-1 rounded-full font-bold">Blob JPEG Pipeline</span>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
-                <div class="text-xs font-bold uppercase text-gray-500">1. Sumber Tubuh (`humanBlob`)</div>
-                <div id="studio-human-label" class="text-xs font-semibold text-charcoal truncate"></div>
-                <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                  <img id="studio-human-preview" src="" referrerpolicy="no-referrer" alt="Human Target" class="max-h-full object-contain" />
+            <!-- Brand Identity -->
+            <div class="mb-10 pb-6 border-b border-white/10">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] uppercase tracking-[0.35em] text-zetLilac font-semibold">Phygital Maison</span>
+                    <span class="inline-flex items-center gap-1 text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-zetLilac">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> QR Verified
+                    </span>
                 </div>
-              </div>
-
-              <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
-                <div class="text-xs font-bold uppercase text-gray-500">2. Pakaian Pilihan (`garmentBlob`)</div>
-                <div id="studio-garment-label" class="text-xs font-semibold text-charcoal truncate"></div>
-                <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                  <img id="studio-garment-preview" src="" referrerpolicy="no-referrer" alt="Garment Target" class="max-h-full object-contain" />
-                </div>
-              </div>
+                <h1 class="font-editorial text-4xl font-bold tracking-widest mt-2 text-white">ZETRAND</h1>
+                <p class="text-xs text-white/60 mt-1 font-light">F&B Craft & Haute Couture Archive</p>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-3">
-              <input id="vton-prompt" type="text" value="High-end luxury streetwear t-shirt, studio lighting, photorealistic cotton texture" class="flex-1 px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
-              <button onclick="runStudioVTON()" id="btn-run-vton" class="px-6 py-2.5 bg-aubergine hover:bg-aubergineLight text-offwhite text-xs font-bold rounded-xl transition shrink-0">
-                Tangkap Blob &amp; Render AI (IDM-VTON)
-              </button>
-            </div>
+            <!-- Navigation Menu Items -->
+            <nav class="space-y-2.5" aria-label="Menu Utama">
+                <button onclick="switchTab('culinary')" id="nav-desk-culinary" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left text-sm transition-all duration-200 bg-white text-zetPrimary font-semibold shadow-lg">
+                    <i class="ph ph-qr-code text-xl"></i>
+                    <div>
+                        <p class="leading-none">Culinary & QR Origin</p>
+                        <span class="text-[10px] opacity-70 font-normal">Ranch Market & Lai Lai Batch</span>
+                    </div>
+                </button>
 
-            <div id="vton-result-box" class="p-5 rounded-xl bg-offwhite border border-dashed border-aubergine/30 text-center space-y-3">
-              <div id="vton-spinner" class="hidden mx-auto w-7 h-7 border-3 border-aubergine border-t-transparent rounded-full animate-spin"></div>
-              <p id="vton-status-text" class="text-xs text-gray-600">Klik tombol di atas untuk mengonversi frame kamera/model dan gambar pakaian menjadi Blob, lalu mengirimkannya ke Hugging Face Space.</p>
-              <div id="vton-composite-preview" class="hidden relative mx-auto w-72 h-96 bg-charcoal rounded-xl overflow-hidden shadow-lg border border-aubergine/30">
-                <img id="vton-out-model" src="" referrerpolicy="no-referrer" class="w-full h-full object-contain" />
-                <img id="vton-out-garment" src="" referrerpolicy="no-referrer" class="absolute top-[24%] left-[25%] w-[50%] h-[46%] object-contain drop-shadow-2xl" />
-              </div>
-            </div>
-          </div>
+                <button onclick="switchTab('fashion')" id="nav-desk-fashion" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left text-sm transition-all duration-200 text-white/75 hover:bg-white/10 hover:text-white">
+                    <i class="ph ph-coat-hanger text-xl"></i>
+                    <div>
+                        <p class="leading-none">Fashion Archive</p>
+                        <span class="text-[10px] opacity-70 font-normal">Betrand Family Lookbook</span>
+                    </div>
+                </button>
 
-        </div>
-      </div>
-    </section>
-
-    <!-- ==========================================
-         TAB 2: CULINARY CRAFT & SMART QR ORIGIN
-         ========================================== -->
-    <section id="tab-culinary" class="hidden space-y-8">
-      <div class="border-b border-charcoal/10 pb-6">
-        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 2 • F&amp;B Catalog &amp; Batch Tracker</span>
-        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Culinary Craft &amp; Smart QR Origin</h2>
-        <p class="text-sm text-gray-600 mt-1">Katalog F&amp;B eksklusif ZETRAND di Ranch Market &amp; Lai Lai lengkap dengan pelacak kode batch produksi dan pasangan outfit.</p>
-      </div>
-
-      <!-- Batch & Freshness Tracker Interactive Box -->
-      <div class="bg-aubergine text-offwhite p-6 rounded-2xl shadow-md grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-        <div class="lg:col-span-7 space-y-2">
-          <span class="text-[10px] uppercase tracking-widest text-lilac font-bold">Batch &amp; Freshness Tracker</span>
-          <h3 class="brand-serif text-2xl font-bold">Verifikasi Keaslian &amp; Kualitas Batch Produksi</h3>
-          <p class="text-xs text-gray-300">Masukkan kode batch pada kemasan Ranch Market atau Lai Lai untuk memeriksa tanggal produksi, standar QC, dan pasangan koleksi pakaian.</p>
-        </div>
-        <div class="lg:col-span-5 space-y-2">
-          <div class="flex gap-2">
-            <input id="batch-input" type="text" value="ZT-BATCH-881" class="flex-1 px-3.5 py-2.5 text-xs rounded-xl bg-white/10 border border-lilac/30 text-offwhite focus:outline-none" />
-            <button onclick="checkBatchFreshness()" class="px-5 py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-xl hover:bg-white transition shrink-0">Cek Batch</button>
-          </div>
-          <div id="batch-result" class="text-[11px] text-lilac font-mono">Status: Siap memverifikasi kode batch kemasan.</div>
-        </div>
-      </div>
-
-      <!-- F&B Catalog Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- SKU 1 -->
-        <div class="bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col justify-between space-y-4">
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-aubergine text-offwhite">Ranch Market Exclusive</span>
-              <span class="text-[11px] font-mono text-gray-500">Batch: #ZT-881</span>
-            </div>
-            <h4 class="brand-serif text-2xl font-bold text-charcoal">ZETRAND Black Truffle Potato Crisps</h4>
-            <p class="text-xs text-gray-600">Keripik kentang artisan dengan minyak truffle hitam Italia. Dipasangkan secara tematik dengan Dual-Side Signature Tee.</p>
-            <div class="p-3 bg-offwhite rounded-xl text-[11px] space-y-1 border border-gray-200">
-              <div class="flex justify-between"><span>Tanggal Produksi:</span><span class="font-semibold">14 Okt 2026</span></div>
-              <div class="flex justify-between"><span>Jaminan Kualitas:</span><span class="font-semibold text-green-700">100% Passed QC</span></div>
-              <div class="flex justify-between"><span>Pasangan Outfit:</span><span class="font-semibold text-aubergine">Separate T-Shirt (Front &amp; Back)</span></div>
-            </div>
-          </div>
-          <button onclick="selectGarmentAndJump(0)" class="w-full py-3 bg-charcoal hover:bg-aubergine text-offwhite text-xs font-bold rounded-xl transition">
-            Coba Outfit Pasangannya
-          </button>
+                <button onclick="switchTab('reels')" id="nav-desk-reels" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left text-sm transition-all duration-200 text-white/75 hover:bg-white/10 hover:text-white">
+                    <i class="ph ph-film-strip text-xl"></i>
+                    <div>
+                        <p class="leading-none">Runway & Taste Reels</p>
+                        <span class="text-[10px] opacity-70 font-normal">9:16 Editorial Video Feed</span>
+                    </div>
+                </button>
+            </nav>
         </div>
 
-        <!-- SKU 2 -->
-        <div class="bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col justify-between space-y-4">
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-aubergine text-offwhite">Lai Lai Market Exclusive</span>
-              <span class="text-[11px] font-mono text-gray-500">Batch: #ZT-882</span>
+        <!-- Direct Customer Data Capture Trigger Card (Sidebar Footer) -->
+        <div class="pt-6 border-t border-white/10">
+            <div class="bg-white/5 border border-zetLilac/25 rounded-2xl p-4 mb-4">
+                <span class="text-[10px] uppercase tracking-widest text-zetLilac font-semibold block">Exclusive Access</span>
+                <p class="text-xs text-white/85 mt-1 leading-relaxed">Pegang kemasan ZETRAND dari Ranch Market atau Lai Lai? Klaim privilege VIP Anda.</p>
+                <button onclick="openVipModal('Sidebar Privilege Access')" class="mt-3 w-full py-2.5 px-3 bg-zetLilac text-zetPrimary font-semibold text-xs rounded-xl hover:bg-white transition flex items-center justify-center gap-1.5">
+                    <i class="ph-fill ph-crown"></i> Klaim VIP Privilege
+                </button>
             </div>
-            <h4 class="brand-serif text-2xl font-bold text-charcoal">ZETRAND Botanical Cold Brew Elixir</h4>
-            <p class="text-xs text-gray-600">Kopi cold brew arabika single-origin dengan infusi bunga elderberry. Dipasangkan dengan koleksi Graffiti Print Tee.</p>
-            <div class="p-3 bg-offwhite rounded-xl text-[11px] space-y-1 border border-gray-200">
-              <div class="flex justify-between"><span>Tanggal Produksi:</span><span class="font-semibold">14 Okt 2026</span></div>
-              <div class="flex justify-between"><span>Jaminan Kualitas:</span><span class="font-semibold text-green-700">Nitrogen Sealed Fresh</span></div>
-              <div class="flex justify-between"><span>Pasangan Outfit:</span><span class="font-semibold text-aubergine">Cotton T-Shirt Graffiti Print</span></div>
+            <div class="flex items-center justify-between text-[11px] text-white/40">
+                <span>ZETRAND CORP</span>
+                <span>ID • SG • PAR</span>
             </div>
-          </div>
-          <button onclick="selectGarmentAndJump(1)" class="w-full py-3 bg-charcoal hover:bg-aubergine text-offwhite text-xs font-bold rounded-xl transition">
-            Coba Outfit Pasangannya
-          </button>
         </div>
+    </aside>
 
-        <!-- SKU 3 -->
-        <div class="bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col justify-between space-y-4">
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-aubergine text-offwhite">Ranch &amp; Lai Lai Flagship</span>
-              <span class="text-[11px] font-mono text-gray-500">Batch: #ZT-883</span>
-            </div>
-            <h4 class="brand-serif text-2xl font-bold text-charcoal">ZETRAND Matcha Ceremonial Tart</h4>
-            <p class="text-xs text-gray-600">Tart matcha Uji Jepang kualitas seremonial dengan lapisan cokelat hitam pekat dan akses VIP Lookbook.</p>
-            <div class="p-3 bg-offwhite rounded-xl text-[11px] space-y-1 border border-gray-200">
-              <div class="flex justify-between"><span>Tanggal Produksi:</span><span class="font-semibold">14 Okt 2026</span></div>
-              <div class="flex justify-between"><span>Jaminan Kualitas:</span><span class="font-semibold text-green-700">Chilled Supply Chain</span></div>
-              <div class="flex justify-between"><span>Pasangan Outfit:</span><span class="font-semibold text-aubergine">Separate T-Shirt (Back View)</span></div>
-            </div>
-          </div>
-          <button onclick="selectGarmentAndJump(0)" class="w-full py-3 bg-charcoal hover:bg-aubergine text-offwhite text-xs font-bold rounded-xl transition">
-            Coba Outfit Pasangannya
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==========================================
-         TAB 3: ZETRAND RUNWAY & TASTE REELS (9:16)
-         ========================================== -->
-    <section id="tab-reels" class="hidden space-y-8">
-      <div class="border-b border-charcoal/10 pb-6">
-        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 3 • Vertical Video &amp; Lookbook Feed (9:16)</span>
-        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">ZETRAND Runway &amp; Taste Reels</h2>
-        <p class="text-sm text-gray-600 mt-1">Jelajahi kampanye vertikal 9:16 yang menggabungkan Fashion dan F&amp;B lengkap dengan Floating Shoppable Card.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Reel Card 1 -->
-        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-xl aspect-[9/16] max-h-[560px] relative flex flex-col justify-between p-5 border border-aubergine">
-          <img src="https://drive.google.com/thumbnail?id=1PgnnYkb7ZMYsVWASw2AjvMWXNiffIUrt&sz=w1000" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-65" alt="Reel 1" />
-          <div class="relative z-10 flex justify-between items-center">
-            <span class="text-[10px] bg-aubergine/90 text-lilac px-3 py-1 rounded-full font-bold">Campaign #01</span>
-            <span class="text-[10px] bg-black/60 px-2.5 py-1 rounded-full">Ranch Market Kemang &amp; Pondok Indah</span>
-          </div>
-
-          <!-- Floating Shoppable Card -->
-          <div class="relative z-10 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] text-lilac uppercase font-bold tracking-wider">Floating Shoppable Card</span>
-              <span class="text-[10px] text-gray-300">Truffle Crisps x Signature Tee</span>
-            </div>
-            <h4 class="font-bold text-sm text-offwhite">ZETRAND Separate T-Shirt (Front &amp; Back)</h4>
-            <p class="text-[11px] text-gray-300">Tersedia bersama produk F&amp;B di Ranch Market.</p>
-            <button onclick="selectGarmentAndJump(0)" class="w-full py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition">
-              Try-On Baju di Video Ini
+    <header class="md:hidden sticky top-0 z-30 bg-zetBg/90 backdrop-blur-md border-b border-black/5 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+            <button onclick="toggleMobileDrawer()" class="p-2 rounded-xl bg-zetPrimary text-white flex items-center justify-center" aria-label="Buka Menu">
+                <i class="ph ph-list text-lg"></i>
             </button>
-          </div>
-        </div>
-
-        <!-- Reel Card 2 -->
-        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-xl aspect-[9/16] max-h-[560px] relative flex flex-col justify-between p-5 border border-aubergine">
-          <img src="https://drive.google.com/thumbnail?id=1jUZinUvPpGJYhZQoOgSrGGZKPzJodVVM&sz=w1000" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-65" alt="Reel 2" />
-          <div class="relative z-10 flex justify-between items-center">
-            <span class="text-[10px] bg-aubergine/90 text-lilac px-3 py-1 rounded-full font-bold">Campaign #02</span>
-            <span class="text-[10px] bg-black/60 px-2.5 py-1 rounded-full">Lai Lai Market Malang &amp; Surabaya</span>
-          </div>
-
-          <!-- Floating Shoppable Card -->
-          <div class="relative z-10 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] text-lilac uppercase font-bold tracking-wider">Floating Shoppable Card</span>
-              <span class="text-[10px] text-gray-300">Cold Brew x Graffiti Tee</span>
-            </div>
-            <h4 class="font-bold text-sm text-offwhite">Cotton T-Shirt with Graffiti Print</h4>
-            <p class="text-[11px] text-gray-300">Beli minuman pendampingnya di Lai Lai Premium Market.</p>
-            <button onclick="selectGarmentAndJump(1)" class="w-full py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition">
-              Try-On Baju di Video Ini
-            </button>
-          </div>
-        </div>
-
-        <!-- Reel Card 3 -->
-        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-xl aspect-[9/16] max-h-[560px] relative flex flex-col justify-between p-5 border border-aubergine">
-          <img src="https://drive.google.com/thumbnail?id=1mwbuCBQyrecieraQ4dskWbhY1v-2-L-t&sz=w1000" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-65" alt="Reel 3" />
-          <div class="relative z-10 flex justify-between items-center">
-            <span class="text-[10px] bg-aubergine/90 text-lilac px-3 py-1 rounded-full font-bold">Campaign #03</span>
-            <span class="text-[10px] bg-black/60 px-2.5 py-1 rounded-full">All Partner Supermarkets</span>
-          </div>
-
-          <!-- Floating Shoppable Card -->
-          <div class="relative z-10 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] text-lilac uppercase font-bold tracking-wider">Floating Shoppable Card</span>
-              <span class="text-[10px] text-gray-300">Matcha Tart x Studio Edition</span>
-            </div>
-            <h4 class="font-bold text-sm text-offwhite">ZETRAND Studio Essential Collection</h4>
-            <p class="text-[11px] text-gray-300">Scan QR kemasan di Ranch Market &amp; Lai Lai untuk diskon 25%.</p>
-            <button onclick="selectGarmentAndJump(0)" class="w-full py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition">
-              Try-On Baju di Video Ini
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==========================================
-         TAB 4: VIP QR CLAIM & LOYALTY (CRM DB)
-         ========================================== -->
-    <section id="tab-vip" class="hidden space-y-8">
-      <div class="border-b border-charcoal/10 pb-6">
-        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 4 • Customer Data Capture &amp; Loyalty</span>
-        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">VIP QR Claim &amp; Loyalty Database</h2>
-        <p class="text-sm text-gray-600 mt-1">Klaim kode unik kemasan makanan Ranch Market &amp; Lai Lai untuk mengumpulkan poin royalti dan diskon fashion.</p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Form Input VIP Claim -->
-        <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm space-y-4">
-          <h3 class="font-bold text-sm uppercase tracking-wider text-aubergine">Formulir Klaim Smart QR Kemasan</h3>
-
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Kode Unik Kemasan F&amp;B</label>
-            <input id="vip-code" type="text" placeholder="Contoh: ZT-QR-2026-991" value="ZT-QR-2026-991" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Nama Lengkap Pelanggan</label>
-            <input id="vip-name" type="text" placeholder="Masukkan nama lengkap..." class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Nomor WhatsApp Aktif</label>
-            <input id="vip-wa" type="tel" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Lokasi Pembelian Supermarket</label>
-            <select id="vip-location" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine bg-white">
-              <option value="Ranch Market">Ranch Market</option>
-              <option value="Lai Lai Premium Market">Lai Lai Premium Market</option>
-              <option value="ZETRAND Pop-Up Booth">ZETRAND Pop-Up Booth</option>
-            </select>
-          </div>
-
-          <button onclick="submitVipClaim()" class="w-full py-3 bg-aubergine hover:bg-aubergineLight text-offwhite font-bold text-xs rounded-xl transition">
-            Simpan Klaim &amp; Aktifkan Voucher Diskon 25%
-          </button>
-
-          <div id="vip-feedback" class="hidden p-3 rounded-xl bg-lilac/40 text-aubergine text-xs font-semibold"></div>
-        </div>
-
-        <!-- Tabel Data Tersimpan (LocalStorage Database) -->
-        <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">Database Klaim Pelanggan (LocalStorage)</h3>
-              <p class="text-xs text-gray-500">Data tersimpan secara persisten di browser untuk analisis CRM ZETRAND</p>
+                <h1 class="font-editorial text-2xl font-bold tracking-widest text-zetPrimary leading-none">ZETRAND</h1>
+                <span class="text-[10px] uppercase tracking-widest text-zetPrimary/70 block">Smart Packaging Portal</span>
             </div>
-            <button onclick="clearVipDatabase()" class="text-[11px] text-red-600 hover:underline font-medium">Reset Data</button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="border-b border-gray-200 text-gray-500 uppercase text-[10px]">
-                  <th class="py-2.5 px-2">Kode QR</th>
-                  <th class="py-2.5 px-2">Nama</th>
-                  <th class="py-2.5 px-2">WhatsApp</th>
-                  <th class="py-2.5 px-2">Lokasi Ritel</th>
-                  <th class="py-2.5 px-2">Poin</th>
-                </tr>
-              </thead>
-              <tbody id="vip-table-body" class="divide-y divide-gray-100"></tbody>
-            </table>
-          </div>
         </div>
-      </div>
-    </section>
+        <button onclick="openVipModal('Header Mobile VIP')" class="px-3 py-1.5 rounded-full bg-zetPrimary text-zetLilac text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+            <i class="ph-fill ph-sparkle"></i> VIP Claim
+        </button>
+    </header>
 
-  </main>
+    <!-- Mobile Slide Drawer Menu (Pelengkap Bottom Navigation Bar) -->
+    <div id="mobile-drawer" class="fixed inset-0 z-50 hidden">
+        <div onclick="toggleMobileDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-xs"></div>
+        <div class="fixed inset-y-0 left-0 w-72 bg-zetPrimary text-white p-6 flex flex-col justify-between z-10 shadow-2xl">
+            <div>
+                <div class="flex items-center justify-between pb-5 border-b border-white/10">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] text-zetLilac">Phygital Ecosystem</span>
+                        <h2 class="font-editorial text-3xl font-bold tracking-widest">ZETRAND</h2>
+                    </div>
+                    <button onclick="toggleMobileDrawer()" class="p-2 text-white/70 hover:text-white rounded-lg">
+                        <i class="ph ph-x text-xl"></i>
+                    </button>
+                </div>
 
-  <!-- GRADIO CLIENT ES6 MODULE -->
-  <script type="module">
-    import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
-    window.GradioClient = Client;
-  </script>
+                <div class="mt-6 space-y-2">
+                    <button onclick="switchTab('culinary'); toggleMobileDrawer();" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm bg-white/10 text-white font-medium">
+                        <i class="ph ph-qr-code text-lg text-zetLilac"></i> Culinary & Smart QR Origin
+                    </button>
+                    <button onclick="switchTab('fashion'); toggleMobileDrawer();" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm text-white/80 hover:bg-white/10">
+                        <i class="ph ph-coat-hanger text-lg text-zetLilac"></i> Fashion Archive & Lookbook
+                    </button>
+                    <button onclick="switchTab('reels'); toggleMobileDrawer();" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm text-white/80 hover:bg-white/10">
+                        <i class="ph ph-film-strip text-lg text-zetLilac"></i> Runway & Taste Reels
+                    </button>
+                </div>
+            </div>
 
-  <!-- CORE APPLICATION LOGIC -->
-  <script>
-    function driveUrl(fileId) {
-      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
-    }
+            <div class="border-t border-white/10 pt-4">
+                <p class="text-xs text-white/70 mb-3">Terhubung langsung dari kemasan ritel resmi Ranch Market & Lai Lai.</p>
+                <button onclick="toggleMobileDrawer(); openVipModal('Mobile Drawer VIP');" class="w-full py-3 bg-zetLilac text-zetPrimary rounded-xl font-semibold text-xs flex items-center justify-center gap-2">
+                    <i class="ph-fill ph-crown"></i> Registrasi Member VIP
+                </button>
+            </div>
+        </div>
+    </div>
 
-    function resolveImageSource(inputUrlOrPath) {
-      if (!inputUrlOrPath) return '';
-      const trimmed = inputUrlOrPath.trim();
-      const match = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) return driveUrl(match[1]);
-      return trimmed;
-    }
+    <main class="flex-1 md:ml-72 pb-24 md:pb-12">
 
-    // 1. ASET GARMENT DARI GOOGLE DRIVE BOS ZEN
-    const garmentCatalog = [
-      {
-        id: 'garm-1',
-        name: 'Separate T-Shirt (Front & Back)',
-        fileName: 'Separate_t-shirt_front_and_back_20261014224620.jpg',
-        driveId: '1qIKx8SJQlOvbjiuH0DwwT3weBmv9mVXo',
-        src: driveUrl('1qIKx8SJQlOvbjiuH0DwwT3weBmv9mVXo')
-      },
-      {
-        id: 'garm-2',
-        name: 'Cotton T-Shirt with Graffiti Print',
-        fileName: 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg',
-        driveId: '1v-EEAFIkVnt5wrmcPiro2JZ5yNVvsDzB',
-        src: driveUrl('1v-EEAFIkVnt5wrmcPiro2JZ5yNVvsDzB')
-      }
-    ];
+        <!-- ==========================================
+             TAB 1: CULINARY CRAFT & SMART QR ORIGIN
+             ========================================== -->
+        <section id="tab-culinary" class="animate-fade max-w-5xl mx-auto px-4 sm:px-8 pt-6 md:pt-10">
+            
+            <!-- Smart QR Verification Banner -->
+            <div class="bg-zetPrimary text-white rounded-2xl p-4 sm:p-5 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
+                <div class="flex items-start sm:items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-zetLilac/15 border border-zetLilac/40 flex items-center justify-center shrink-0 text-zetLilac">
+                        <i class="ph-fill ph-seal-check text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[11px] uppercase tracking-widest text-zetLilac font-semibold">Authentic Smart Packaging</span>
+                            <span id="active-store-badge" class="text-[10px] bg-white/15 px-2.5 py-0.5 rounded-full text-white font-medium">Ranch Market Grand Indonesia</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-white/85 mt-0.5">Produk yang Anda pindai terverifikasi asli dari jalur distribusi dingin ZETRAND.</p>
+                    </div>
+                </div>
+                <!-- Quick Batch Switcher Simulation -->
+                <div class="flex items-center gap-2 self-end sm:self-center">
+                    <label for="batch-select" class="text-[11px] text-white/70">Simulasi Kemasan:</label>
+                    <select id="batch-select" onchange="changeBatchData(this.value)" class="bg-white/10 text-white text-xs rounded-lg px-2.5 py-1.5 border border-white/20 focus:outline-none">
+                        <option value="B8821" class="text-black">Truffle Wagyu (#ZT-8821)</option>
+                        <option value="B8825" class="text-black">Royal Matcha Tart (#ZT-8825)</option>
+                        <option value="B8830" class="text-black">Smoked Duck Confit (#ZT-8830)</option>
+                    </select>
+                </div>
+            </div>
 
-    // 2. ASET MODEL PRESET DARI GOOGLE DRIVE BOS ZEN
-    const modelCatalog = [
-      {
-        id: 'mod-1',
-        name: 'Man Wearing White T-Shirt',
-        fileName: 'Man_wearing_white_t-shirt_20261014224614.jpg',
-        driveId: '1mwbuCBQyrecieraQ4dskWbhY1v-2-L-t',
-        src: driveUrl('1mwbuCBQyrecieraQ4dskWbhY1v-2-L-t')
-      },
-      {
-        id: 'mod-2',
-        name: 'Man Posing in Studio I',
-        fileName: 'Man_posing_in_studio_20261014224612.jpg',
-        driveId: '1PgnnYkb7ZMYsVWASw2AjvMWXNiffIUrt',
-        src: driveUrl('1PgnnYkb7ZMYsVWASw2AjvMWXNiffIUrt')
-      },
-      {
-        id: 'mod-3',
-        name: 'Man Posing in Studio II',
-        fileName: 'Man_posing_in_studio_20261014224617.jpg',
-        driveId: '1jUZinUvPpGJYhZQoOgSrGGZKPzJodVVM',
-        src: driveUrl('1jUZinUvPpGJYhZQoOgSrGGZKPzJodVVM')
-      }
-    ];
+            <!-- Hero Product & Storytelling Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                <!-- Product Visual -->
+                <div class="lg:col-span-7 relative rounded-3xl overflow-hidden bg-zetSurface border border-black/5 shadow-sm group">
+                    <img id="culinary-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85" 
+                         onerror="this.src='https://placehold.co/800x600/2E1035/E9D5FF?text=ZETRAND+Culinary+Craft'"
+                         alt="ZETRAND Signature Culinary" class="w-full h-72 sm:h-96 object-cover group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent p-6 flex flex-col justify-end text-white">
+                        <span id="culinary-category" class="text-[11px] uppercase tracking-[0.25em] text-zetLilac font-semibold">Artisanal Ready-to-Serve</span>
+                        <h2 id="culinary-title" class="font-editorial text-3xl sm:text-4xl font-bold mt-1">Dry-Aged Truffle Wagyu Brisket</h2>
+                        <p id="culinary-subtitle" class="text-xs sm:text-sm text-white/80 mt-1 max-w-xl">Dimasak lambat selama 18 jam dengan infusi jamur Black Perigord Truffle dan garam laut Bali.</p>
+                    </div>
+                </div>
 
-    let selectedGarmentIndex = 0;
-    let selectedModelIndex = 0;
-    let garmentCropMode = 'full';
-    let overlayScale = 1.0;
-    let overlayOffsetY = 0;
-    let overlayOpacity = 0.95;
-    let currentShoulderAngleDeg = 0;
-    let isMultiplyBlend = false;
-    let isWebcamActive = false;
-    let cameraInstance = null;
-    let poseInstance = null;
+                <!-- Batch & Freshness Tracker Card -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-black/5 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between pb-4 border-b border-black/5">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-zetPrimary font-bold">Batch & Freshness Tracker</span>
+                                <h3 class="font-editorial text-2xl font-bold text-zetText">sertifikasi Kualitas Ritel</h3>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-check-circle"></i> Segar 100%
+                            </span>
+                        </div>
 
-    function renderLists() {
-      const gContainer = document.getElementById('garment-list');
-      gContainer.innerHTML = '';
-      garmentCatalog.forEach((item, idx) => {
-        const isSelected = idx === selectedGarmentIndex;
-        const card = document.createElement('div');
-        card.className = `p-2.5 rounded-xl border cursor-pointer transition ${isSelected ? 'border-aubergine bg-aubergine/5 ring-2 ring-aubergine' : 'border-gray-200 hover:border-aubergine/50'}`;
-        card.onclick = () => {
-          selectedGarmentIndex = idx;
-          updateStageImages();
-          renderLists();
+                        <!-- Batch Details List -->
+                        <div class="mt-4 space-y-3 text-xs sm:text-sm">
+                            <div class="flex justify-between py-2 border-b border-dashed border-black/10">
+                                <span class="text-zinc-500">Nomor Batch Produksi</span>
+                                <span id="batch-code" class="font-mono font-bold text-zetPrimary">#ZT-2026-8821</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dashed border-black/10">
+                                <span class="text-zinc-500">Tanggal Rilis Dapur Utama</span>
+                                <span id="batch-date" class="font-semibold">14 Okt 2026 • 05:30 WIB</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dashed border-black/10">
+                                <span class="text-zinc-500">Lokasi Ritel Terdaftar</span>
+                                <span id="batch-store" class="font-semibold">Ranch Market & Lai Lai</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dashed border-black/10">
+                                <span class="text-zinc-500">Suhu Rantai Dingin</span>
+                                <span class="font-semibold text-emerald-700">2.4°C Stabil (Terjaga)</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-zinc-500">Sertifikasi Kualitas</span>
+                                <span class="font-semibold">Halal MUI • HACCP • Artisan Grade</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-t border-black/5 flex items-center justify-between">
+                        <div class="text-[11px] text-zinc-500">
+                            Diawasi langsung oleh <strong class="text-zetText">Chef Executive ZETRAND</strong>
+                        </div>
+                        <button onclick="openStoreAvailabilityModal()" class="text-xs font-semibold text-zetPrimary underline hover:opacity-75">
+                            Cek Stok Ritel Lain
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storytelling: Bahan Baku, Filosofi Resep & Kurasi Rasa -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-[0.2em] text-zetPrimary font-semibold">The Culinary Narrative</span>
+                        <h3 class="font-editorial text-2xl sm:text-3xl font-bold">Filosofi & Kurasi Rasa</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-black/5 shadow-xs">
+                        <div class="w-9 h-9 rounded-xl bg-zetPrimary/10 text-zetPrimary flex items-center justify-center mb-3">
+                            <i class="ph-fill ph-plant text-xl"></i>
+                        </div>
+                        <h4 class="font-editorial text-xl font-bold text-zetPrimary">1. Bahan Baku Premium</h4>
+                        <p id="story-ingredient" class="text-xs text-zinc-600 mt-1.5 leading-relaxed">
+                            Menggunakan daging sapi Wagyu MB7+ pilihan dari peternakan bebas stres serta rempah organik lokal yang dipanen maksimal 24 jam sebelum pengolahan.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-black/5 shadow-xs">
+                        <div class="w-9 h-9 rounded-xl bg-zetPrimary/10 text-zetPrimary flex items-center justify-center mb-3">
+                            <i class="ph-fill ph-cooking-pot text-xl"></i>
+                        </div>
+                        <h4 class="font-editorial text-xl font-bold text-zetPrimary">2. Filosofi Resep Keluarga</h4>
+                        <p id="story-philosophy" class="text-xs text-zinc-600 mt-1.5 leading-relaxed">
+                            Perpaduan teknik gastronomi Prancis dengan kehangatan resep autentik keluarga Betrand. Tanpa pengawet sintetis dan dikemas dengan teknologi vakum kedap udara.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-black/5 shadow-xs">
+                        <div class="w-9 h-9 rounded-xl bg-zetPrimary/10 text-zetPrimary flex items-center justify-center mb-3">
+                            <i class="ph-fill ph-wine text-xl"></i>
+                        </div>
+                        <h4 class="font-editorial text-xl font-bold text-zetPrimary">3. Kurasi Rasa & Pairing</h4>
+                        <p id="story-pairing" class="text-xs text-zinc-600 mt-1.5 leading-relaxed">
+                            Profil rasa umami berlapis dengan aroma smoky yang lembut. Sangat ideal dipadukan dengan nasi hangat Jepang atau artisanal sourdough saat makan malam.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THE FASHION BRIDGE (CROSS-SELLING CARD) -->
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-zetPrimary via-[#3c1546] to-[#1a081f] text-white p-6 sm:p-8 shadow-xl border border-zetLilac/30">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-8">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zetLilac/15 border border-zetLilac/40 text-zetLilac text-[11px] uppercase tracking-widest font-semibold">
+                            <i class="ph-fill ph-Scissors"></i> The Fashion Bridge • Exclusive Cross-Privilege
+                        </div>
+                        <h3 class="font-editorial text-3xl sm:text-4xl font-bold mt-3 leading-tight">
+                            Styled for the Taste: <span class="italic font-normal text-zetLilac">Dari Meja Makan ke Runway</span>
+                        </h3>
+                        <p class="text-xs sm:text-sm text-white/80 mt-2 max-w-2xl leading-relaxed">
+                            Sebagai pemilik kemasan ZETRAND Culinary dari Ranch Market / Lai Lai, Anda berhak membuka akses ke koleksi busana eksklusif karya lini desainer keluarga Betrand dengan potongan harga khusus sebesar <strong>Rp 350.000</strong>.
+                        </p>
+
+                        <!-- Voucher Code Box -->
+                        <div class="mt-5 flex flex-wrap items-center gap-3">
+                            <div class="bg-black/30 border border-dashed border-zetLilac/60 rounded-xl px-4 py-2.5 flex items-center gap-3">
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-widest text-white/60 block">Kode Voucher Kemasan</span>
+                                    <span id="bridge-voucher-code" class="font-mono text-sm sm:text-base font-bold text-zetLilac tracking-wider">ZET-TASTE350</span>
+                                </div>
+                                <button onclick="copyVoucherCode('ZET-TASTE350')" class="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-medium flex items-center gap-1 transition">
+                                    <i class="ph ph-copy"></i> Salin
+                                </button>
+                            </div>
+
+                            <button onclick="openVipModal('The Fashion Bridge - Voucher ZET-TASTE350')" class="px-5 py-3.5 rounded-xl bg-zetLilac text-zetPrimary font-bold text-xs sm:text-sm hover:bg-white transition flex items-center gap-2 shadow-lg">
+                                <i class="ph-fill ph-ticket"></i> Aktifkan Voucher & Buka Katalog
+                            </button>
+
+                            <button onclick="switchTab('fashion')" class="px-4 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                                Lihat Lookbook <i class="ph ph-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4">
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/15 flex items-center gap-3.5">
+                            <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=400&q=80" 
+                                 onerror="this.src='https://placehold.co/300x400/2E1035/E9D5FF?text=ZETRAND+Couture'"
+                                 alt="Preview Koleksi" class="w-20 h-24 rounded-xl object-cover shrink-0">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-widest text-zetLilac">Featured Pairing</span>
+                                <h4 class="font-editorial text-xl font-bold leading-snug">Aubergine Silk Trench</h4>
+                                <p class="text-[11px] text-white/70 mt-0.5">Koleksi Musim Gugur Betrand Atelier</p>
+                                <button onclick="switchTab('fashion')" class="mt-2 text-xs text-zetLilac font-semibold underline flex items-center gap-1">
+                                    Inspeksi Jahitan <i class="ph ph-arrow-up-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 2: FASHION ARCHIVE & LOOKBOOK
+             ========================================== -->
+        <section id="tab-fashion" class="hidden animate-fade max-w-6xl mx-auto px-4 sm:px-8 pt-6 md:pt-10">
+            
+            <!-- Editorial Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between pb-6 border-b border-black/10 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-zetPrimary font-bold">
+                        <span>Betrand Family Designer Line</span>
+                        <span>•</span>
+                        <span>Autumn / Winter 2026</span>
+                    </div>
+                    <h2 class="font-editorial text-4xl sm:text-5xl font-bold text-zetText mt-1">Fashion Archive & Lookbook</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-zinc-600 max-w-md">
+                    Kurasi busana berpotongan arsitektural dengan detail jahitan tangan. Dirancang untuk panggung selebritas maupun perjamuan malam eksklusif.
+                </p>
+            </div>
+
+            <!-- Filter Kategori -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-5">
+                <button onclick="filterFashion('all')" id="filter-all" class="px-4 py-2 rounded-full text-xs font-semibold bg-zetPrimary text-white transition shrink-0">
+                    Semua Koleksi (6)
+                </button>
+                <button onclick="filterFashion('outerwear')" id="filter-outerwear" class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-black/10 text-zetText hover:border-zetPrimary transition shrink-0">
+                    Tailored Outerwear
+                </button>
+                <button onclick="filterFashion('evening')" id="filter-evening" class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-black/10 text-zetText hover:border-zetPrimary transition shrink-0">
+                    Evening Silk & Gown
+                </button>
+                <button onclick="filterFashion('resort')" id="filter-resort" class="px-4 py-2 rounded-full text-xs font-semibold bg-white border border-black/10 text-zetText hover:border-zetPrimary transition shrink-0">
+                    Editorial Resort
+                </button>
+            </div>
+
+            <!-- Editorial Lookbook Grid (Di-render secara dinamis lewat JS) -->
+            <div id="fashion-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+            <!-- Bespoke Private Fitting Banner -->
+            <div class="mt-10 bg-white rounded-3xl p-6 sm:p-8 border border-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-zetPrimary font-bold">Private Atelier Service</span>
+                    <h3 class="font-editorial text-2xl sm:text-3xl font-bold mt-1">Ingin Pengukuran Khusus (Made-to-Measure)?</h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 mt-1">Tim stylist keluarga Betrand siap melayani sesi fitting privat di studio Jakarta atau pengiriman sampel kain ke kediaman Anda.</p>
+                </div>
+                <button onclick="checkoutWhatsApp('Sesi Private Fitting Bespoke ZETRAND', 'Konsultasi Özel')" class="px-5 py-3.5 rounded-xl bg-zetPrimary text-white text-xs font-semibold hover:opacity-95 transition shrink-0 flex items-center gap-2">
+                    <i class="ph-fill ph-whatsapp-logo text-lg text-emerald-400"></i> Jadwalkan via WhatsApp
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 3: ZETRAND RUNWAY & TASTE REELS
+             ========================================== -->
+        <section id="tab-reels" class="hidden animate-fade max-w-4xl mx-auto px-2 sm:px-6 pt-2 md:pt-8">
+            <div class="flex items-center justify-between px-2 mb-3">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-zetPrimary font-bold">9:16 Phygital Cinema</span>
+                    <h2 class="font-editorial text-2xl sm:text-3xl font-bold">Runway & Taste Reels</h2>
+                </div>
+                <span class="text-xs text-zinc-500 flex items-center gap-1">
+                    <i class="ph ph-arrows-out-line-vertical"></i> Scroll Vertikal
+                </span>
+            </div>
+
+            <!-- 9:16 Vertical Snap Feed Container -->
+            <div id="reels-feed-container" class="reels-container h-[78vh] md:h-[82vh] max-w-md mx-auto overflow-y-scroll no-scrollbar rounded-3xl shadow-2xl border border-black/10 bg-black">
+                <!-- Reels items injected by JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-zetPrimary text-white border-t border-white/15 px-2 py-1.5 flex items-center justify-around shadow-2xl" aria-label="Navigasi Bawah Mobile">
+        <button onclick="switchTab('culinary')" id="nav-mob-culinary" class="flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-zetLilac font-semibold transition">
+            <i class="ph-fill ph-qr-code text-xl"></i>
+            <span class="text-[10px] mt-0.5">Culinary QR</span>
+        </button>
+
+        <button onclick="switchTab('fashion')" id="nav-mob-fashion" class="flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-white/65 hover:text-white transition">
+            <i class="ph ph-coat-hanger text-xl"></i>
+            <span class="text-[10px] mt-0.5">Lookbook</span>
+        </button>
+
+        <button onclick="switchTab('reels')" id="nav-mob-reels" class="flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-white/65 hover:text-white transition">
+            <i class="ph ph-film-strip text-xl"></i>
+            <span class="text-[10px] mt-0.5">Taste Reels</span>
+        </button>
+
+        <button onclick="openVipModal('Bottom Bar VIP Mobile')" class="flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-white/65 hover:text-zetLilac transition">
+            <i class="ph-fill ph-crown text-xl text-zetLilac"></i>
+            <span class="text-[10px] mt-0.5 text-zetLilac font-medium">VIP Claim</span>
+        </button>
+    </nav>
+
+    <!-- ==========================================
+         MODAL 1: VIP QR SCAN & DIRECT CUSTOMER DATA CAPTURE
+         ========================================== -->
+    <div id="vip-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeVipModal()" class="fixed inset-0 bg-black/70 backdrop-blur-xs"></div>
+        <div class="relative bg-zetBg text-zetText w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl border border-zetPrimary/20 z-10 animate-fade">
+            <div class="flex items-start justify-between">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-zetPrimary font-bold block">Direct-to-Consumer Privilege</span>
+                    <h3 class="font-editorial text-3xl font-bold text-zetPrimary mt-0.5">Klaim Voucher & Bundling VIP</h3>
+                </div>
+                <button onclick="closeVipModal()" class="p-1.5 rounded-full bg-black/5 hover:bg-black/10 text-zetText">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <p id="vip-modal-context" class="text-xs text-zinc-600 mt-2 leading-relaxed">
+                Masukkan data Anda untuk mengunci voucher potongan busana Rp 350.000 dan akses pre-order menu rahasia ZETRAND di Ranch Market & Lai Lai.
+            </p>
+
+            <form id="vip-capture-form" onsubmit="submitVipForm(event)" class="mt-4 space-y-3.5">
+                <div>
+                    <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-700 block mb-1">Nama Lengkap</label>
+                    <input type="text" id="vip-name" required placeholder="Contoh: Nadine Chandrawinata" 
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/15 text-sm focus:outline-none focus:border-zetPrimary">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-700 block mb-1">Nomor WhatsApp</label>
+                        <input type="tel" id="vip-wa" required placeholder="0812xxxxxxxx" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/15 text-sm focus:outline-none focus:border-zetPrimary">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-700 block mb-1">Alamat Email</label>
+                        <input type="email" id="vip-email" required placeholder="nama@email.com" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/15 text-sm focus:outline-none focus:border-zetPrimary">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-700 block mb-1">Lokasi Pembelian Kemasan</label>
+                        <select id="vip-store" class="w-full px-3 py-2.5 rounded-xl bg-white border border-black/15 text-xs font-medium focus:outline-none focus:border-zetPrimary">
+                            <option value="Ranch Market Grand Indonesia">Ranch Market Grand Indonesia</option>
+                            <option value="Ranch Market Pondok Indah">Ranch Market Pondok Indah</option>
+                            <option value="Ranch Market Galaxy Surabaya">Ranch Market Galaxy Surabaya</option>
+                            <option value="Lai Lai Market Malang">Lai Lai Market Malang</option>
+                            <option value="Online / Official Hampers">Official Hampers / Lainnya</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-700 block mb-1">Kode Batch Kemasan</label>
+                        <input type="text" id="vip-batch" value="#ZT-2026-8821" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-zetSurface border border-black/15 text-xs font-mono font-bold text-zetPrimary focus:outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-zetPrimary text-zetLilac font-bold text-xs sm:text-sm hover:opacity-95 transition flex items-center justify-center gap-2 shadow-lg mt-2">
+                    <i class="ph-fill ph-seal-check text-lg"></i> Kunci Voucher & Simpan Privilege
+                </button>
+            </form>
+
+            <!-- Data Tersimpan Indicator (D2C CRM Preview) -->
+            <div class="mt-4 pt-3 border-t border-black/10 flex items-center justify-between text-[11px] text-zinc-500">
+                <span>Data terenkripsi ZETRAND D2C Vault</span>
+                <span id="captured-count-badge" class="font-semibold text-zetPrimary">0 Member Terdaftar</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 2: CEK KETERSEDIAAN CABANG RITEL TERDEKAT
+         ========================================== -->
+    <div id="store-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeStoreAvailabilityModal()" class="fixed inset-0 bg-black/70 backdrop-blur-xs"></div>
+        <div class="relative bg-zetBg text-zetText w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-black/10 z-10 animate-fade">
+            <div class="flex items-start justify-between pb-4 border-b border-black/10">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-zetPrimary font-bold">Real-Time Cold Chain Stock</span>
+                    <h3 class="font-editorial text-2xl sm:text-3xl font-bold text-zetPrimary">Ketersediaan Ranch Market & Lai Lai</h3>
+                </div>
+                <button onclick="closeStoreAvailabilityModal()" class="p-1.5 rounded-full bg-black/5 hover:bg-black/10">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <div class="my-4 space-y-2.5 max-h-72 overflow-y-auto pr-1">
+                <div class="p-3.5 rounded-2xl bg-white border border-black/5 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-zetText">Ranch Market Grand Indonesia (Jakarta)</p>
+                        <span class="text-[11px] text-zinc-500">Chiller Gourmet Lorong 2 • Diperbarui 10 menit lalu</span>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">Tersedia (14 Pack)</span>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white border border-black/5 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-zetText">Ranch Market Pondok Indah Mall</p>
+                        <span class="text-[11px] text-zinc-500">Showcase Artisan Counter • Diperbarui 18 menit lalu</span>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">Tersedia (9 Pack)</span>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white border border-black/5 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-zetText">Lai Lai Market Semeru (Malang)</p>
+                        <span class="text-[11px] text-zinc-500">Premium Imported Chiller • Diperbarui 5 menit lalu</span>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold">Stok Menipis (3 Pack)</span>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white border border-black/5 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-zetText">Ranch Market Basuki Rahmat (Surabaya)</p>
+                        <span class="text-[11px] text-zinc-500">Premium Delicatessen • Diperbarui 12 menit lalu</span>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">Tersedia (19 Pack)</span>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <span class="text-xs text-zinc-600">Ingin reservasi kemasan sebelum kehabisan?</span>
+                <button onclick="closeStoreAvailabilityModal(); openVipModal('Reservasi Stok Ritel Ranch Market / Lai Lai');" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-zetPrimary text-zetLilac text-xs font-semibold">
+                    Titip Keep Kemasan via VIP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification (Pengganti Alert) -->
+    <div id="toast-box" class="fixed top-5 right-5 z-50 hidden max-w-sm bg-zetPrimary text-white px-4 py-3.5 rounded-2xl shadow-2xl border border-zetLilac/40 flex items-center gap-3 animate-fade">
+        <i class="ph-fill ph-check-circle text-xl text-zetLilac shrink-0"></i>
+        <div>
+            <p id="toast-title" class="text-xs font-bold text-zetLilac uppercase tracking-wider">Berhasil</p>
+            <p id="toast-msg" class="text-xs text-white/90 mt-0.5">Tindakan selesai.</p>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================
+           DATA MASTER ZETRAND (F&B, FASHION, REELS)
+           ========================================== */
+        const BATCH_DATABASE = {
+            B8821: {
+                code: "#ZT-2026-8821",
+                title: "Dry-Aged Truffle Wagyu Brisket",
+                category: "Artisanal Ready-to-Serve",
+                subtitle: "Dimasak lambat selama 18 jam dengan infusi jamur Black Perigord Truffle dan garam laut Bali.",
+                date: "14 Okt 2026 • 05:30 WIB",
+                store: "Ranch Market Grand Indonesia",
+                img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85",
+                ingredient: "Menggunakan daging sapi Wagyu MB7+ pilihan dari peternakan bebas stres serta rempah organik lokal yang dipanen maksimal 24 jam sebelum pengolahan.",
+                philosophy: "Perpaduan teknik gastronomi Prancis dengan kehangatan resep autentik keluarga Betrand. Tanpa pengawet sintetis dan dikemas vakum kedap udara.",
+                pairing: "Profil rasa umami berlapis dengan aroma smoky yang lembut. Sangat ideal dipadukan dengan nasi hangat Jepang atau artisanal sourdough saat makan malam."
+            },
+            B8825: {
+                code: "#ZT-2026-8825",
+                title: "Uji Matcha & Smoked Valrhona Tart",
+                category: "Patisserie Couture Edition",
+                subtitle: "Lapisan ganache cokelat Valrhona 70% berpadu dengan bubuk teh hijau seremonial Uji Kyoto.",
+                date: "14 Okt 2026 • 07:15 WIB",
+                store: "Lai Lai Market Semeru Malang",
+                img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=85",
+                ingredient: "Matcha seremonial panen pertama dari Kyoto, mentega kultur Normandia, dan cokelat hitam single-origin pilihan.",
+                philosophy: "Keseimbangan rasa pahit elegan dan manis yang terkendali, mencerminkan estetika minimalis lini mode ZETRAND.",
+                pairing: "Nikmati dalam suhu ruang bersama seduhan teh putih hangat atau espresso tanpa gula."
+            },
+            B8830: {
+                code: "#ZT-2026-8830",
+                title: "Spiced Mulberry Duck Confit",
+                category: "Heritage Fine Dining Pack",
+                subtitle: "Paha bebek lokal organik yang dimarinasi 36 jam dengan rempah nusantara dan reduksi saus mulberry.",
+                date: "14 Okt 2026 • 06:00 WIB",
+                store: "Ranch Market Pondok Indah",
+                img: "https://images.unsplash.com/photo-1514944298352-f4d732142f74?auto=format&fit=crop&w=1200&q=85",
+                ingredient: "Bebek organik pakan alami, buah mulberry segar dataran tinggi Batu, bunga lawang, dan lada hitam Lampung.",
+                philosophy: "Menghadirkan hidangan kelas restoran bintang lima ke meja makan rumah hanya dengan pemanasan 8 menit di atas pan.",
+                pairing: "Teksturnya yang renyah di luar dan lembut di dalam sangat serasi dengan kentang tumbuk truffle."
+            }
         };
-        card.innerHTML = `
-          <div class="h-28 bg-offwhite rounded-lg overflow-hidden mb-2 flex items-center justify-center">
-            <img src="${item.src}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${item.fileName}';" alt="${item.name}" class="max-h-full object-contain" />
-          </div>
-          <div class="text-xs font-bold text-charcoal truncate">${item.name}</div>
-          <div class="text-[10px] text-gray-500 truncate">${item.fileName}</div>
-        `;
-        gContainer.appendChild(card);
-      });
 
-      const mContainer = document.getElementById('model-list');
-      mContainer.innerHTML = '';
-      modelCatalog.forEach((item, idx) => {
-        const isSelected = idx === selectedModelIndex;
-        const card = document.createElement('div');
-        card.className = `p-2 rounded-xl border cursor-pointer transition ${isSelected ? 'border-aubergine bg-aubergine/5 ring-2 ring-aubergine' : 'border-gray-200 hover:border-aubergine/50'}`;
-        card.onclick = () => {
-          selectedModelIndex = idx;
-          updateStageImages();
-          renderLists();
-        };
-        card.innerHTML = `
-          <div class="h-24 bg-offwhite rounded-lg overflow-hidden mb-1.5 flex items-center justify-center">
-            <img src="${item.src}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${item.fileName}';" alt="${item.name}" class="max-h-full object-contain" />
-          </div>
-          <div class="text-[11px] font-bold text-charcoal truncate">${item.name}</div>
-          <div class="text-[9px] text-gray-500 truncate">${item.fileName}</div>
-        `;
-        mContainer.appendChild(card);
-      });
+        const FASHION_CATALOG = [
+            {
+                id: "F01",
+                name: "Aubergine Silk Double-Breasted Trench",
+                category: "outerwear",
+                categoryLabel: "Tailored Outerwear",
+                price: "Rp 4.850.000",
+                voucherPrice: "Rp 4.500.000",
+                fabric: "100% Mulberry Silk Twill & Cupro Lining",
+                stitching: "Hand-finished pick stitching (14 SPI), kancing tanduk alami ukir logo ZETRAND.",
+                img: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "F02",
+                name: "Le Noir Architectural Draped Blazer",
+                category: "outerwear",
+                categoryLabel: "Tailored Outerwear",
+                price: "Rp 5.200.000",
+                voucherPrice: "Rp 4.850.000",
+                fabric: "Italian Virgin Wool Super 130s",
+                stitching: "Konstruksi bahu full-canvas, jahitan dalam berlapis pipa satin lilac.",
+                img: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "F03",
+                name: "Lilac Mist Bias-Cut Evening Slip",
+                category: "evening",
+                categoryLabel: "Evening Silk & Gown",
+                price: "Rp 3.950.000",
+                voucherPrice: "Rp 3.600.000",
+                fabric: "Heavyweight 30-Momme Charmeuse Silk",
+                stitching: "French seam (kampuh balik halus) tanpa obras terbuka untuk kenyamanan kulit maksimal.",
+                img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "F04",
+                name: "Betrand Signature Pleated Culottes",
+                category: "resort",
+                categoryLabel: "Editorial Resort",
+                price: "Rp 2.790.000",
+                voucherPrice: "Rp 2.440.000",
+                fabric: "Organic Linen & Tencel Luxe Blend",
+                stitching: "Lipit presisi terkunci uap panas dengan pinggang belakang tersembunyi.",
+                img: "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "F05",
+                name: "Velvet Midnight Opera Cape",
+                category: "evening",
+                categoryLabel: "Evening Silk & Gown",
+                price: "Rp 6.400.000",
+                voucherPrice: "Rp 6.050.000",
+                fabric: "Silk-Blend Velvet dengan bordir benang perak",
+                stitching: "Penyelesaian tepi jahit tangan artisanal selama 28 jam pengerjaan di studio.",
+                img: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "F06",
+                name: "Off-White Monogram Overshirt",
+                category: "resort",
+                categoryLabel: "Editorial Resort",
+                price: "Rp 3.150.000",
+                voucherPrice: "Rp 2.800.000",
+                fabric: "Japanese Crisp Cotton Gabardine",
+                stitching: "Twin-needle felled seams dengan sulaman monogram tonal di pergelangan.",
+                img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=800&q=80"
+            }
+        ];
 
-      document.getElementById('model-count-badge').textContent = `${modelCatalog.length} Preset`;
-    }
+        const REELS_FEED = [
+            {
+                id: "R01",
+                talent: "Valerie Betrand • Muse & Creative Director",
+                caption: "Menikmati Dry-Aged Truffle Wagyu langsung setelah sesi pemotretan koleksi Autumn/Winter di Jakarta.",
+                garment: "Aubergine Silk Trench",
+                voucherCode: "REEL-SILK350",
+                dish: "Dry-Aged Truffle Wagyu (#ZT-8821)",
+                Poster: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80",
+                videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-fashion-model-posing-in-neon-light-39877-large.mp4"
+            },
+            {
+                id: "R02",
+                talent: "Chef Julian & Soraya Larasati",
+                caption: "Ketika kelezatan Uji Matcha Valrhona Tart bertemu kilau gaun malam Lilac Mist.",
+                garment: "Lilac Mist Evening Slip",
+                voucherCode: "REEL-LILAC350",
+                dish: "Uji Matcha Tart (#ZT-8825)",
+                Poster: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80",
+                videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-in-a-stylish-coat-walking-in-the-city-41764-large.mp4"
+            },
+            {
+                id: "R03",
+                talent: "Backstage Private Dinner • Surabaya",
+                caption: "Malam apresiasi pembeli setia Ranch Market & Lai Lai bersama keluarga desainer Betrand.",
+                garment: "Le Noir Architectural Blazer",
+                voucherCode: "REEL-NOIR350",
+                dish: "Spiced Mulberry Duck Confit (#ZT-8830)",
+                Poster: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=900&q=80",
+                videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-serving-fine-dining-dish-in-slow-motion-41572-large.mp4"
+            }
+        ];
 
-    function updateStageImages() {
-      const gItem = garmentCatalog[selectedGarmentIndex];
-      const mItem = modelCatalog[selectedModelIndex];
+        /* ==========================================
+           SPA TAB NAVIGATION CONTROLLER
+           ========================================== */
+        function switchTab(tabName) {
+            const tabs = ['culinary', 'fashion', 'reels'];
+            tabs.forEach(t => {
+                const section = document.getElementById(`tab-${t}`);
+                const deskBtn = document.getElementById(`nav-desk-${t}`);
+                const mobBtn = document.getElementById(`nav-mob-${t}`);
 
-      const stageModel = document.getElementById('stage-model-img');
-      const stageGarment = document.getElementById('stage-garment-img');
+                if (t === tabName) {
+                    section.classList.remove('hidden');
+                    // Desktop Active State
+                    if (deskBtn) {
+                        deskBtn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left text-sm transition-all duration-200 bg-white text-zetPrimary font-semibold shadow-lg";
+                    }
+                    // Mobile Active State
+                    if (mobBtn) {
+                        mobBtn.className = "flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-zetLilac font-semibold transition";
+                    }
+                } else {
+                    section.classList.add('hidden');
+                    if (deskBtn) {
+                        deskBtn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left text-sm transition-all duration-200 text-white/75 hover:bg-white/10 hover:text-white";
+                    }
+                    if (mobBtn) {
+                        mobBtn.className = "flex flex-col items-center justify-center py-1.5 px-3 rounded-xl text-white/65 hover:text-white transition";
+                    }
+                }
+            });
 
-      stageModel.onerror = () => { stageModel.src = mItem.fileName; };
-      stageModel.src = mItem.src;
-
-      stageGarment.onerror = () => { stageGarment.src = gItem.fileName; };
-      stageGarment.src = gItem.src;
-
-      document.getElementById('studio-human-preview').src = mItem.src;
-      document.getElementById('studio-human-label').textContent = mItem.fileName;
-      document.getElementById('studio-garment-preview').src = gItem.src;
-      document.getElementById('studio-garment-label').textContent = gItem.fileName;
-
-      applyStageTransforms();
-    }
-
-    function addNewItemToList() {
-      try {
-        const titleInput = document.getElementById('upload-title').value.trim();
-        const category = document.getElementById('upload-category').value;
-        const fileInput = document.getElementById('upload-file');
-        const driveInput = document.getElementById('upload-drive-url').value.trim();
-
-        if (fileInput.files && fileInput.files[0]) {
-          const file = fileInput.files[0];
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            pushItemToCatalog(category, titleInput || file.name, file.name, e.target.result);
-            fileInput.value = '';
-            document.getElementById('upload-title').value = '';
-          };
-          reader.readAsDataURL(file);
-        } else if (driveInput) {
-          const resolvedUrl = resolveImageSource(driveInput);
-          const displayTitle = titleInput || 'Uploaded Drive Asset';
-          pushItemToCatalog(category, displayTitle, resolvedUrl, resolvedUrl);
-          document.getElementById('upload-drive-url').value = '';
-          document.getElementById('upload-title').value = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      } catch (err) {
-        console.error('Upload error:', err);
-      }
-    }
 
-    function pushItemToCatalog(category, name, fileName, srcUrl) {
-      if (category === 'garment') {
-        garmentCatalog.unshift({ id: 'garm-' + Date.now(), name, fileName, src: srcUrl });
-        selectedGarmentIndex = 0;
-      } else {
-        modelCatalog.unshift({ id: 'mod-' + Date.now(), name, fileName, src: srcUrl });
-        selectedModelIndex = 0;
-      }
-      renderLists();
-      updateStageImages();
-    }
+        function toggleMobileDrawer() {
+            const drawer = document.getElementById('mobile-drawer');
+            drawer.classList.toggle('hidden');
+        }
 
-    function setGarmentCrop(mode) {
-      garmentCropMode = mode;
-      ['full', 'front', 'back'].forEach(m => {
-        const btn = document.getElementById('crop-' + m);
-        btn.className = (m === mode)
-          ? 'px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white'
-          : 'px-2 py-1 text-[10px] font-semibold rounded text-charcoal';
-      });
-      updateGarmentClass();
-    }
+        /* ==========================================
+           TAB 1 LOGIC: DYNAMIC BATCH & VOUCHER COPY
+           ========================================== */
+        function changeBatchData(batchKey) {
+            const data = BATCH_DATABASE[batchKey];
+            if (!data) return;
 
-    function toggleMultiplyBlend() {
-      isMultiplyBlend = !isMultiplyBlend;
-      const btn = document.getElementById('btn-blend');
-      btn.textContent = `Multiply Blend: ${isMultiplyBlend ? 'ON' : 'OFF'}`;
-      updateGarmentClass();
-    }
+            document.getElementById('culinary-img').src = data.img;
+            document.getElementById('culinary-category').textContent = data.category;
+            document.getElementById('culinary-title').textContent = data.title;
+            document.getElementById('culinary-subtitle').textContent = data.subtitle;
+            document.getElementById('batch-code').textContent = data.code;
+            document.getElementById('batch-date').textContent = data.date;
+            document.getElementById('batch-store').textContent = data.store;
+            document.getElementById('active-store-badge').textContent = data.store;
+            document.getElementById('story-ingredient').textContent = data.ingredient;
+            document.getElementById('story-philosophy').textContent = data.philosophy;
+            document.getElementById('story-pairing').textContent = data.pairing;
+            document.getElementById('vip-batch').value = data.code;
 
-    function updateGarmentClass() {
-      const stageGarment = document.getElementById('stage-garment-img');
-      stageGarment.className = `h-full drop-shadow-2xl crop-${garmentCropMode} ${isMultiplyBlend ? 'blend-multiply' : ''}`;
-    }
+            showToast("Batch Diperbarui", `Menampilkan data kemasan ${data.code}`);
+        }
 
-    function updateOverlayParams() {
-      overlayScale = parseInt(document.getElementById('slider-scale').value, 10) / 100;
-      overlayOffsetY = parseInt(document.getElementById('slider-offset-y').value, 10);
-      overlayOpacity = parseInt(document.getElementById('slider-opacity').value, 10) / 100;
+        function copyVoucherCode(code) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
 
-      document.getElementById('val-scale').textContent = Math.round(overlayScale * 100) + '%';
-      document.getElementById('val-offset-y').textContent = overlayOffsetY + ' px';
-      document.getElementById('val-opacity').textContent = Math.round(overlayOpacity * 100) + '%';
+            showToast("Kode Tersalin", `Voucher ${code} siap digunakan saat checkout busana.`);
+        }
 
-      applyStageTransforms();
-    }
+        /* ==========================================
+           TAB 2 LOGIC: RENDER FASHION ARCHIVE
+           ========================================== */
+        function renderFashionArchive(filter = 'all') {
+            const container = document.getElementById('fashion-grid');
+            const items = filter === 'all' 
+                ? FASHION_CATALOG 
+                : FASHION_CATALOG.filter(item => item.category === filter);
 
-    function applyStageTransforms() {
-      const wrapper = document.getElementById('stage-garment-wrapper');
-      const garmentImg = document.getElementById('stage-garment-img');
-      wrapper.style.transform = `translateY(${overlayOffsetY}px) scale(${overlayScale}) rotate(${currentShoulderAngleDeg}deg)`;
-      garmentImg.style.opacity = overlayOpacity;
-      document.getElementById('ar-telemetry').textContent = `Sudut Bahu: ${currentShoulderAngleDeg.toFixed(1)}° | Skala: ${Math.round(overlayScale * 100)}%`;
-    }
+            container.innerHTML = items.map(item => `
+                <article class="bg-white rounded-3xl overflow-hidden border border-black/5 shadow-xs hover:shadow-xl transition duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="relative h-80 overflow-hidden bg-zetSurface">
+                            <img src="${item.img}" 
+                                 onerror="this.src='https://placehold.co/600x800/2E1035/E9D5FF?text=ZETRAND+Lookbook'"
+                                 alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-black/65 backdrop-blur-md text-zetLilac text-[10px] uppercase tracking-widest font-semibold">
+                                ${item.categoryLabel}
+                            </span>
+                        </div>
 
-    // ==========================================
-    // MODE 1: MEDIAPIPE POSE + MATH.ATAN2 ROTATION
-    // ==========================================
-    function initMediaPipePose() {
-      if (poseInstance) return;
-      poseInstance = new Pose({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-      });
-      poseInstance.setOptions({
-        modelComplexity: 1,
-        smoothLandmarks: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
-      });
-      poseInstance.onResults(onPoseResults
+                        <div class="p-5">
+                            <h3 class="font-editorial text-2xl font-bold text-zetText leading-snug">${item.name}</h3>
+                            
+                            <!-- Harga Normal vs Harga Pemilik Kemasan Makanan -->
+                            <div class="mt-2 flex items-baseline gap-2.5">
+                                <span class="text-sm font-bold text-zetPrimary">${item.voucherPrice}</span>
+                                <span class="text-xs text-zinc-400 line-through">${item.price}</span>
+                                <span class="text-[10px] bg-zetLilac/40 text-zetPrimary px-2 py-0.5 rounded-md font-semibold">Harga QR F&B</span>
+                            </div>
+
+                            <!-- Detail Jahitan & Spesifikasi Bahan -->
+                            <div class="mt-4 pt-3 border-t border-dashed border-black/10 space-y-2 text-xs">
+                                <div>
+                                    <span class="text-zinc-400 block text-[10px] uppercase tracking-wider">Spesifikasi Material</span>
+                                    <p class="font-medium text-zetText">${item.fabric}</p>
+                                </div>
+                                <div>
+                                    <span class="text-zinc-400 block text-[10px] uppercase tracking-wider">Konstruksi & Detail Jahitan</span>
+                                    <p class="text-zinc-600 leading-relaxed">${item.stitching}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-5 pb-5 pt-2 flex items-center gap-2">
+                        <button onclick="checkoutWhatsApp('${item.name}', '${item.voucherPrice}')" 
+                                class="flex-1 py-3 px-4 rounded-xl bg-zetPrimary text-white text-xs font-semibold hover:opacity-95 transition flex items-center justify-center gap-1.5">
+                            <i class="ph-fill ph-whatsapp-logo text-base text-emerald-400"></i> WhatsApp Checkout
+                        </button>
+                        <button onclick="openVipModal('Klaim Potongan Rp 350rb: ${item.name}')" 
+                                class="p-3 rounded-xl bg-zetSurface hover:bg-zetLilac/50 text-zetPrimary transition" title="Klaim dengan QR Makanan">
+                            <i class="ph-fill ph-qr-code text-lg"></i>
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function filterFashion(category) {
+            const buttons = ['all', 'outerwear', 'evening', 'resort'];
+            buttons.forEach(b => {
+                const btn = document.getElementById(`filter-${b}`);
+                if (b === category) {
+                    btn.className = "px-4 py-2 rounded-full text-xs font-semibold bg-zetPrimary text-white transition shrink-0";
+                } else {
+                    btn.className = "px-4 py-2 rounded-full text-xs font-semibold bg-white border border-black/10 text-zetText hover:border-zetPrimary transition shrink-0";
+                }
+            });
+            renderFashionArchive(category);
+        }
+
+        function checkoutWhatsApp(itemName, priceInfo) {
+            const batchCode = document.getElementById('vip-batch')?.value || '#ZT-2026-8821';
+            const message = encodeURIComponent(
+                `Halo Concierge ZETRAND, saya ingin memesan koleksi *${itemName}* (${priceInfo}) menggunakan privilege QR Kemasan Batch ${batchCode}. Mohon informasi ketersediaan ukuran.`
+            );
+            window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+        }
+
+        /* ==========================================
+           TAB 3 LOGIC: RENDER 9:16 REELS FEED
+           ========================================== */
+        function renderReelsFeed() {
+            const container = document.getElementById('reels-feed-container');
+            container.innerHTML = REELS_FEED.map((reel, idx) => `
+                <div class="reel-item relative w-full h-full bg-zinc-900 overflow-hidden flex flex-col justify-end select-none">
+                    <!-- Background Cinematic Video with Fallback Poster -->
+                    <video autoplay loop muted playsinline poster="${reel.Poster}" class="absolute inset-0 w-full h-full object-cover opacity-85">
+                        <source src="${reel.videoUrl}" type="video/mp4">
+                    </video>
+
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
+
+                    <!-- Top Reel Indicator -->
+                    <div class="absolute top-4 inset-x-4 flex items-center justify-between text-white z-10">
+                        <span class="px-3 py-1 rounded-full bg-black/50 backdrop-blur-md text-[10px] uppercase tracking-widest text-zetLilac font-semibold border border-white/15">
+                            ZETRAND Reel 0${idx + 1} / 0${REELS_FEED.length}
+                        </span>
+                        <span class="text-xs bg-zetPrimary/80 px-2.5 py-1 rounded-full border border-zetLilac/30">
+                            Phygital Pairing
+                        </span>
+                    </div>
+
+                    <!-- Bottom Narrative & Floating Interactive Card -->
+                    <div class="relative z-10 p-5 text-white space-y-3.5">
+                        <div>
+                            <p class="text-xs font-bold text-zetLilac tracking-wide">${reel.talent}</p>
+                            <p class="text-xs text-white/90 mt-1 leading-relaxed">${reel.caption}</p>
+                        </div>
+
+                        <!-- FLOATING INTERACTIVE CARD DI DALAM VIDEO -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3.5 space-y-2.5 shadow-xl">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="text-zetLilac font-semibold flex items-center gap-1">
+                                    <i class="ph-fill ph-sparkle"></i> In Frame: ${reel.garment}
+                                </span>
+                                <span class="text-white/75">${reel.dish}</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <button onclick="openVipModal('Klaim Voucher Baju di Video: ${reel.garment} (${reel.voucherCode})')" 
+                                        class="w-full py-2.5 px-3 rounded-xl bg-zetLilac text-zetPrimary font-bold text-xs hover:bg-white transition flex items-center justify-center gap-1.5">
+                                    <i class="ph-fill ph-ticket"></i> Klaim Voucher Baju Ini
+                                </button>
+                                <button onclick="openStoreAvailabilityModal()" 
+                                        class="w-full py-2.5 px-3 rounded-xl bg-zetPrimary/90 hover:bg-zetPrimary text-white font-semibold text-xs border border-zetLilac/30 transition flex items-center justify-center gap-1.5">
+                                    <i class="ph-fill ph-storefront"></i> Cek Makanan di Cabang
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ==========================================
+           VIP DATA CAPTURE & MODAL LOGIC
+           ========================================== */
+        function openVipModal(sourceContext) {
+            const modal = document.getElementById('vip-modal');
+            const contextEl = document.getElementById('vip-modal-context');
+            if (sourceContext) {
+                contextEl.textContent = `Akses: ${sourceContext}. Masukkan WhatsApp & Email Anda untuk mengunci privilege langsung ke akun ZETRAND D2C Anda.`;
+            }
+            modal.classList.remove('hidden');
+            updateCapturedCountBadge();
+        }
+
+        function closeVipModal() {
+            document.getElementById('vip-modal').classList.add('hidden');
+        }
+
+        function openStoreAvailabilityModal() {
+            document.getElementById('store-modal').classList.remove('hidden');
+        }
+
+        function closeStoreAvailabilityModal() {
+            document.getElementById('store-modal').classList.add('hidden');
+        }
+
+        function submitVipForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('vip-name').value.trim();
+            const wa = document.getElementById('vip-wa').value.trim();
+            const email = document.getElementById('vip-email').value.trim();
+            const store = document.getElementById('vip-store').value;
+            const batch = document.getElementById('vip-batch').value;
+
+            const newEntry = {
+                name,
+                wa,
+                email,
+                store,
+                batch,
+                timestamp: new Date().toISOString()
+            };
+
+            let savedLeads = [];
+            try {
+                savedLeads = JSON.parse(localStorage.getItem('zetrand_vip_leads') || '[]');
+                savedLeads.push(newEntry);
+                localStorage.setItem('zetrand_vip_leads', JSON.stringify(savedLeads));
+            } catch (err) {
+                savedLeads.push(newEntry);
+            }
+
+            updateCapturedCountBadge();
+            closeVipModal();
+            document.getElementById('vip-capture-form').reset();
+            document.getElementById('vip-batch').value = batch;
+
+            showToast("Privilege VIP Aktif", `Terima kasih ${name}, voucher ZET-TASTE350 telah dikaitkan ke nomor ${wa}.`);
+        }
+
+        function updateCapturedCountBadge() {
+            try {
+                const savedLeads = JSON.parse(localStorage.getItem('zetrand_vip_leads') || '[]');
+                const badge = document.getElementById('captured-count-badge');
+                if (badge) {
+                    badge.textContent = `${savedLeads.length} Member VIP Tersimpan`;
+                }
+            } catch (e) {}
+        }
+
+        /* ==========================================
+           TOAST NOTIFICATION HELPER
+           ========================================== */
+        let toastTimer = null;
+        function showToast(title, message) {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = message;
+            box.classList.remove('hidden');
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3600);
+        }
+
+        /* ==========================================
+           INITIALIZE APP ON LOAD
+           ========================================== */
+        window.onload = function () {
+            renderFashionArchive('all');
+            renderReelsFeed();
+            updateCapturedCountBadge();
+        };
+    </script>
+</body>
+</html>
