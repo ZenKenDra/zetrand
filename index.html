@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZETRAND | Phygital Luxury & AI Virtual Try-On Portal</title>
-  <!-- Tailwind CSS CDN -->
+  <title>ZETRAND | High-End Phygital F&B & Fashion Ecosystem</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- MediaPipe Pose & Camera Utils -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
 
@@ -20,6 +17,7 @@
             offwhite: '#FAF9F6',
             aubergine: '#2E1035',
             aubergineLight: '#461B50',
+            lilac: '#E9D5FF',
             charcoal: '#18181B'
           },
           fontFamily: {
@@ -32,266 +30,270 @@
   </script>
 
   <style>
-    body {
-      background-color: #FAF9F6;
-      color: #18181B;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .brand-serif {
-      font-family: 'Cormorant Garamond', serif;
-    }
-    .active-nav {
-      background-color: #2E1035;
-      color: #FAF9F6;
-    }
-    .custom-scroll::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #2E1035;
-      border-radius: 9999px;
-    }
+    body { background-color: #FAF9F6; color: #18181B; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .brand-serif { font-family: 'Cormorant Garamond', serif; }
+    .active-nav-desktop { background-color: #2E1035; color: #FAF9F6; border-left: 4px solid #E9D5FF; }
+    .active-nav-mobile { color: #E9D5FF; background-color: rgba(233, 213, 255, 0.15); }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #2E1035; border-radius: 9999px; }
+    .crop-full { object-fit: contain; object-position: center; width: 100%; }
+    .crop-front { object-fit: cover; object-position: left center; width: 100%; }
+    .crop-back { object-fit: cover; object-position: right center; width: 100%; }
+    .blend-multiply { mix-blend-mode: multiply; }
+    .reels-snap { scroll-snap-type: y mandatory; }
+    .reels-item { scroll-snap-align: start; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row bg-offwhite text-charcoal overflow-x-hidden">
+<body class="min-h-screen flex flex-col md:flex-row bg-offwhite text-charcoal pb-20 md:pb-0 overflow-x-hidden">
 
-  <!-- SIDEBAR NAVIGATION -->
-  <aside class="w-full md:w-72 bg-charcoal text-offwhite flex flex-col justify-between p-6 shrink-0 border-r border-aubergine/30">
+  <!-- DESKTOP FIXED SIDEBAR -->
+  <aside class="hidden md:flex md:w-72 bg-charcoal text-offwhite flex-col justify-between p-6 shrink-0 border-r border-aubergine/30 sticky top-0 h-screen">
     <div>
-      <!-- Brand Header -->
       <div class="mb-8 pb-6 border-b border-white/10">
-        <span class="text-[10px] uppercase tracking-[0.3em] text-purple-300 font-semibold block mb-1">Phygital Ecosystem</span>
+        <span class="text-[10px] uppercase tracking-[0.3em] text-lilac font-semibold block mb-1">Phygital Ecosystem</span>
         <h1 class="brand-serif text-4xl font-bold tracking-wider text-offwhite">ZETRAND</h1>
         <p class="text-xs text-gray-400 mt-1">Zetrand Creative Lab • F&amp;B x Luxury Apparel</p>
       </div>
 
-      <!-- Multi-Tab Menu -->
       <nav class="space-y-2">
-        <button onclick="switchTab('tryon')" id="nav-tryon" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between transition active-nav">
-          <span>1. AI Virtual Try-On</span>
-          <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">Dual-Mode</span>
+        <button onclick="switchTab('tryon')" id="nav-desktop-tryon" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between transition active-nav-desktop">
+          <span>1. AI Virtual Try-On Studio</span>
+          <span class="text-[10px] bg-lilac/20 text-lilac px-2 py-0.5 rounded-full">Dual-AI</span>
         </button>
-        <button onclick="switchTab('culinary')" id="nav-culinary" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
-          <span>2. Culinary &amp; Smart QR</span>
-          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">Cross-Retail</span>
+        <button onclick="switchTab('culinary')" id="nav-desktop-culinary" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
+          <span>2. Culinary &amp; Smart QR Origin</span>
+          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">F&amp;B SKU</span>
         </button>
-        <button onclick="switchTab('reels')" id="nav-reels" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-sm flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
-          <span>3. Fashion &amp; Food Reels</span>
+        <button onclick="switchTab('reels')" id="nav-desktop-reels" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
+          <span>3. Runway &amp; Taste Reels</span>
           <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">9:16 Feed</span>
+        </button>
+        <button onclick="switchTab('vip')" id="nav-desktop-vip" class="w-full text-left px-4 py-3.5 rounded-xl font-medium text-xs flex items-center justify-between text-gray-300 hover:bg-white/10 transition">
+          <span>4. VIP QR Claim &amp; Loyalty</span>
+          <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">CRM DB</span>
         </button>
       </nav>
     </div>
 
-    <!-- Co-Founder System Badge -->
-    <div class="mt-8 pt-6 border-t border-white/10 text-xs text-gray-400 space-y-1">
-      <div class="font-semibold text-offwhite">System Architecture</div>
-      <p>Bos Zen (CTO/CSO) &amp; Betrand (Commercial Lead)</p>
-      <p class="text-[11px] text-purple-300">Ranch Market &amp; Lai Lai Insider Network</p>
+    <div class="pt-6 border-t border-white/10 text-xs text-gray-400 space-y-1.5">
+      <div class="font-semibold text-lilac uppercase tracking-wider text-[10px]">Co-Founder Architecture</div>
+      <p class="text-[11px] text-offwhite font-medium">Bos Zen (CTO/CSO) &amp; Betrand (Commercial Lead)</p>
+      <p class="text-[10px] text-gray-400">Ranch Market &amp; Lai Lai Insider Network</p>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT WORKSPACE -->
-  <main class="flex-1 p-6 md:p-10 overflow-y-auto custom-scroll">
+  <!-- MOBILE HEADER & BOTTOM NAVIGATION BAR -->
+  <header class="md:hidden bg-charcoal text-offwhite px-5 py-4 flex items-center justify-between border-b border-aubergine">
+    <div>
+      <span class="text-[9px] uppercase tracking-[0.25em] text-lilac block">Zetrand Creative Lab</span>
+      <h1 class="brand-serif text-2xl font-bold tracking-wider">ZETRAND</h1>
+    </div>
+    <span class="text-[10px] bg-aubergine text-lilac px-3 py-1 rounded-full font-semibold border border-lilac/30">Phygital SPA</span>
+  </header>
+
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-offwhite border-t border-white/15 grid grid-cols-4 px-2 py-1.5 shadow-2xl">
+    <button onclick="switchTab('tryon')" id="nav-mobile-tryon" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-semibold active-nav-mobile">1. Try-On</button>
+    <button onclick="switchTab('culinary')" id="nav-mobile-culinary" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-medium text-gray-400">2. Culinary</button>
+    <button onclick="switchTab('reels')" id="nav-mobile-reels" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-medium text-gray-400">3. Reels 9:16</button>
+    <button onclick="switchTab('vip')" id="nav-mobile-vip" class="flex flex-col items-center justify-center py-2 rounded-xl text-[10px] font-medium text-gray-400">4. VIP Claim</button>
+  </nav>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 p-5 md:p-10 overflow-y-auto custom-scroll">
 
     <!-- ==========================================
-         TAB 1: DUAL-MODE AI VIRTUAL TRY-ON
+         TAB 1: AI VIRTUAL TRY-ON STUDIO
          ========================================== -->
     <section id="tab-tryon" class="space-y-8">
-      <!-- Top Bar -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-charcoal/10 pb-6">
         <div>
-          <span class="text-xs uppercase tracking-widest text-aubergine font-bold">ZETRAND Digital Atelier</span>
-          <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Dual-Mode AI Virtual Try-On</h2>
-          <p class="text-sm text-gray-600 mt-1">Uji koleksi pakaian ZETRAND secara real-time (MediaPipe 30 FPS) atau render fotorealistik (IDM-VTON HD).</p>
+          <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 1 • ZETRAND Digital Atelier</span>
+          <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">AI Virtual Try-On Studio</h2>
+          <p class="text-sm text-gray-600 mt-1">Mode 1: Live AR 30 FPS dengan rotasi bahu otomatis (MediaPipe Pose) • Mode 2: Generative VTON (IDM-VTON).</p>
         </div>
 
-        <!-- Mode Selector -->
-        <div class="inline-flex bg-gray-200 p-1 rounded-xl self-start">
-          <button id="btn-mode-ar" onclick="setTryOnMode('ar')" class="px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition">
-            Mode Live AR (0 Detik / 30 FPS)
+        <div class="inline-flex bg-charcoal/10 p-1.5 rounded-xl self-start">
+          <button id="btn-mode-ar" onclick="setTryOnMode('ar')" class="px-4 py-2.5 rounded-lg text-xs font-bold bg-aubergine text-offwhite shadow-sm transition">
+            Mode 1: Live AR Overlay (0 Detik)
           </button>
-          <button id="btn-mode-studio" onclick="setTryOnMode('studio')" class="px-4 py-2 rounded-lg text-xs font-semibold text-charcoal hover:bg-white/60 transition">
-            Mode Studio AI Render (HD 8-15 Detik)
+          <button id="btn-mode-studio" onclick="setTryOnMode('studio')" class="px-4 py-2.5 rounded-lg text-xs font-bold text-charcoal hover:bg-white/60 transition">
+            Mode 2: Studio HD AI Render (IDM-VTON)
           </button>
         </div>
       </div>
 
-      <!-- Main Grid: Left (Catalog & Upload List) | Right (Try-On Viewport) -->
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-
-        <!-- LEFT COLUMN: GARMENT LIST, MODEL PRESET LIST & UPLOAD PANEL -->
+        <!-- LEFT PANEL: UPLOAD, CATALOG & VOUCHER -->
         <div class="xl:col-span-5 space-y-6">
 
-          <!-- Upload New Item to List Card -->
+          <!-- Upload Aset ke List -->
           <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
             <div class="flex items-center justify-between">
-              <h3 class="font-bold text-sm uppercase tracking-wider text-aubergine">Tambah / Upload ke Daftar Katalog</h3>
-              <span class="text-[11px] bg-aubergine/10 text-aubergine px-2.5 py-0.5 rounded-full font-medium">Auto-Sync List</span>
+              <h3 class="font-bold text-xs uppercase tracking-wider text-aubergine">Tambah / Upload ke Daftar Katalog</h3>
+              <span class="text-[10px] bg-lilac text-aubergine px-2.5 py-0.5 rounded-full font-bold">Auto-Sync</span>
             </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Item / Koleksi</label>
-                <input id="upload-title" type="text" placeholder="Contoh: Oversized Graphic Tee" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Kategori List</label>
-                <select id="upload-category" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine bg-white">
-                  <option value="garment">Koleksi Pakaian (Garment)</option>
-                  <option value="model">Foto Model / Target Tubuh</option>
-                </select>
-              </div>
+              <input id="upload-title" type="text" placeholder="Nama Koleksi / Model" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
+              <select id="upload-category" class="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine bg-white">
+                <option value="garment">Koleksi Pakaian (Garment)</option>
+                <option value="model">Foto Model / Target Tubuh</option>
+              </select>
             </div>
-
-            <!-- File Input OR Link Input -->
             <div class="space-y-2">
-              <label class="block text-xs font-medium text-gray-600">Pilih File Lokal atau Tempel Link Google Drive</label>
-              <input id="upload-file" type="file" accept="image/*" class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-aubergine file:text-offwhite hover:file:bg-aubergineLight cursor-pointer" />
-              <div class="flex gap-2 pt-1">
+              <input id="upload-file" type="file" accept="image/*" onchange="addNewItemToList()" class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-aubergine file:text-offwhite cursor-pointer" />
+              <div class="flex gap-2">
                 <input id="upload-drive-url" type="text" placeholder="Atau tempel link Google Drive / URL gambar..." class="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:border-aubergine" />
-                <button onclick="addNewItemToList()" class="px-4 py-2 bg-charcoal text-offwhite text-xs font-semibold rounded-lg hover:bg-aubergine transition shrink-0">
-                  + Masuk List
-                </button>
+                <button onclick="addNewItemToList()" class="px-4 py-2 bg-charcoal text-offwhite text-xs font-semibold rounded-lg hover:bg-aubergine transition shrink-0">+ Masuk List</button>
               </div>
             </div>
           </div>
 
-          <!-- 1. DAFTAR KOLEKSI PAKAIAN (GARMENT LIST) -->
+          <!-- 1. Katalog Pakaian (currentGarment) -->
           <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">1. Daftar Pakaian (Garment Try-On)</h3>
-                <p class="text-xs text-gray-500">Pilih pakaian untuk ditempelkan ke Live AR atau IDM-VTON</p>
+                <h3 class="font-bold text-xs uppercase tracking-wider text-charcoal">1. Katalog Pakaian (`currentGarment`)</h3>
+                <p class="text-[11px] text-gray-500">Klik kartu untuk mengganti pakaian aktif</p>
               </div>
-              <!-- Toggle Front/Back for Separate_t-shirt_front_and_back -->
               <div class="flex items-center gap-1 bg-offwhite border border-gray-200 p-1 rounded-lg">
                 <button id="crop-full" onclick="setGarmentCrop('full')" class="px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white">Full</button>
                 <button id="crop-front" onclick="setGarmentCrop('front')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Depan (Kiri)</button>
                 <button id="crop-back" onclick="setGarmentCrop('back')" class="px-2 py-1 text-[10px] font-semibold rounded text-charcoal">Belakang (Kanan)</button>
               </div>
             </div>
-
-            <div id="garment-list" class="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto custom-scroll pr-1">
-              <!-- Populated dynamically via JS -->
-            </div>
+            <div id="garment-list" class="grid grid-cols-2 gap-3 max-h-60 overflow-y-auto custom-scroll pr-1"></div>
           </div>
 
-          <!-- 2. DAFTAR FOTO MODEL / PRESET LOOKBOOK (MODEL LIST) -->
+          <!-- 2. Daftar Foto Model Preset -->
           <div class="bg-white p-5 rounded-2xl shadow-sm border border-charcoal/10 space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">2. Daftar Foto Model &amp; Studio Lookbook</h3>
-                <p class="text-xs text-gray-500">Klik foto model untuk diuji pada kanvas Try-On atau Studio Render</p>
+                <h3 class="font-bold text-xs uppercase tracking-wider text-charcoal">2. Preset Model &amp; Studio Lookbook</h3>
+                <p class="text-[11px] text-gray-500">Klik model untuk simulasi cepat atau input Studio HD</p>
               </div>
-              <span id="model-count-badge" class="text-[11px] font-semibold text-aubergine">3 Preset</span>
+              <span id="model-count-badge" class="text-[11px] font-bold text-aubergine bg-lilac/40 px-2.5 py-0.5 rounded-full">3 Preset</span>
             </div>
-
-            <div id="model-list" class="grid grid-cols-3 gap-3 max-h-60 overflow-y-auto custom-scroll pr-1">
-              <!-- Populated dynamically via JS -->
-            </div>
+            <div id="model-list" class="grid grid-cols-3 gap-3 max-h-56 overflow-y-auto custom-scroll pr-1"></div>
           </div>
 
+          <!-- Kotak Klaim Voucher Bundling F&B -->
+          <div class="bg-aubergine text-offwhite p-5 rounded-2xl shadow-md space-y-3 border border-lilac/20">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] uppercase tracking-widest text-lilac font-bold">Cross-Selling Bundling</span>
+              <span class="text-[10px] bg-white/15 px-2.5 py-0.5 rounded-full">Ranch Market &amp; Lai Lai</span>
+            </div>
+            <h4 class="brand-serif text-xl font-bold">Klaim Voucher Kemasan Makanan</h4>
+            <p class="text-xs text-gray-300">Masukkan kode unik dari kemasan F&amp;B ZETRAND untuk diskon 25% pembelian pakaian ini.</p>
+            <div class="flex gap-2">
+              <input id="quick-voucher-input" type="text" value="ZETRAND-RANCH25" class="flex-1 px-3 py-2 text-xs rounded-lg bg-white/10 border border-lilac/30 text-offwhite focus:outline-none" />
+              <button onclick="applyQuickBundlingVoucher()" class="px-4 py-2 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition shrink-0">Klaim Diskon</button>
+            </div>
+            <div id="quick-voucher-msg" class="hidden text-xs text-lilac font-medium pt-1"></div>
+          </div>
         </div>
 
-        <!-- RIGHT COLUMN: DUAL-MODE VIEWPORT -->
+        <!-- RIGHT PANEL: VIEWPORT MODE 1 & MODE 2 -->
         <div class="xl:col-span-7 space-y-6">
 
-          <!-- MODE A: LIVE AR VIEWPORT (MEDIAPIPE POSE) -->
-          <div id="viewport-ar" class="bg-charcoal text-offwhite p-6 rounded-2xl shadow-lg space-y-4">
+          <!-- MODE 1: LIVE AR OVERLAY -->
+          <div id="viewport-ar" class="bg-charcoal text-offwhite p-6 rounded-2xl shadow-lg space-y-4 border border-aubergine">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <span class="text-[10px] uppercase tracking-widest text-purple-300 font-semibold">Google MediaPipe Pose • Client-Side 30 FPS</span>
-                <h3 class="text-lg font-bold">Live AR Virtual Mirror &amp; Model Tester</h3>
+                <span class="text-[10px] uppercase tracking-widest text-lilac font-semibold">Mode 1 • MediaPipe Pose Landmarks [11, 12, 23, 24]</span>
+                <h3 class="text-lg font-bold">Live AR Overlay &amp; Sudut Bahu Dinamis</h3>
               </div>
-              <div class="flex items-center gap-2">
-                <button onclick="startWebcamAR()" class="px-3.5 py-2 bg-aubergine hover:bg-aubergineLight text-offwhite text-xs font-semibold rounded-lg transition">
-                  Aktifkan Kamera Live AR
+              <div class="flex flex-wrap items-center gap-2">
+                <button onclick="startWebcamAR()" class="px-3.5 py-2 bg-aubergine hover:bg-aubergineLight border border-lilac/40 text-offwhite text-xs font-semibold rounded-lg transition">
+                  Aktifkan Webcam Live AR
                 </button>
                 <button onclick="stopWebcamAR()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-offwhite text-xs font-medium rounded-lg transition">
-                  Mode Foto Preset
+                  Mode Foto Model
+                </button>
+                <button onclick="toggleMultiplyBlend()" id="btn-blend" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-lilac text-xs font-medium rounded-lg transition">
+                  Multiply Blend: OFF
                 </button>
               </div>
             </div>
 
-            <!-- Canvas & Video Container -->
-            <div class="relative w-full aspect-[4/3] bg-black/80 rounded-xl overflow-hidden flex items-center justify-center border border-white/10">
+            <div id="ar-stage" class="relative w-full aspect-[4/3] bg-black/95 rounded-xl overflow-hidden flex items-center justify-center border border-white/10 select-none">
               <video id="ar-video" class="hidden" playsinline></video>
-              <canvas id="ar-canvas" width="800" height="600" class="w-full h-full object-contain"></canvas>
+              <canvas id="ar-canvas" width="800" height="600" class="w-full h-full object-contain hidden"></canvas>
 
-              <!-- Status Pill -->
-              <div id="ar-status" class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-purple-200 border border-white/10">
-                Mode Pratinjau Preset Model (Klik "Aktifkan Kamera Live AR" untuk pelacakan bahu real-time)
+              <!-- Layer 1: Foto Model -->
+              <img id="stage-model-img" src="" alt="Model Target" referrerpolicy="no-referrer" class="w-full h-full object-contain z-10" />
+
+              <!-- Layer 2: Dynamic Garment Overlay -->
+              <div id="stage-garment-wrapper" class="absolute z-20 pointer-events-none flex items-center justify-center transition-transform duration-75" style="width: 38%; height: 48%; top: 24%; left: 31%;">
+                <img id="stage-garment-img" src="" alt="Garment Overlay" referrerpolicy="no-referrer" class="h-full crop-full drop-shadow-2xl" style="opacity: 0.95;" />
+              </div>
+
+              <div id="ar-status" class="absolute top-3 left-3 z-30 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-full text-[11px] text-lilac border border-white/10">
+                Mode Pratinjau Model Aktif • Klik "Aktifkan Webcam Live AR" untuk deteksi tubuh
+              </div>
+              <div id="ar-telemetry" class="absolute bottom-3 right-3 z-30 bg-black/75 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-mono text-gray-300 border border-white/10">
+                Sudut Bahu: 0.0° | Skala: 100%
               </div>
             </div>
 
-            <!-- Manual Fine-Tuning Controls for Overlay -->
+            <!-- Kalibrasi Manual -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-white/10 text-xs">
               <div>
-                <label class="flex justify-between text-gray-300 mb-1">
-                  <span>Skala Ukuran Baju</span>
-                  <span id="val-scale">100%</span>
-                </label>
-                <input id="slider-scale" type="range" min="50" max="160" value="100" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+                <label class="flex justify-between text-gray-300 mb-1"><span>Skala Lebar Baju</span><span id="val-scale">100%</span></label>
+                <input id="slider-scale" type="range" min="50" max="170" value="100" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
               </div>
               <div>
-                <label class="flex justify-between text-gray-300 mb-1">
-                  <span>Posisi Vertikal (Y)</span>
-                  <span id="val-offset-y">0 px</span>
-                </label>
-                <input id="slider-offset-y" type="range" min="-120" max="120" value="0" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
+                <label class="flex justify-between text-gray-300 mb-1"><span>Offset Vertikal (Y)</span><span id="val-offset-y">0 px</span></label>
+                <input id="slider-offset-y" type="range" min="-140" max="140" value="0" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
               </div>
               <div>
-                <label class="flex justify-between text-gray-300 mb-1">
-                  <span>Transparansi Tekstur</span>
-                  <span id="val-opacity">95%</span>
-                </label>
+                <label class="flex justify-between text-gray-300 mb-1"><span>Opasitas Pakaian</span><span id="val-opacity">95%</span></label>
                 <input id="slider-opacity" type="range" min="40" max="100" value="95" oninput="updateOverlayParams()" class="w-full accent-purple-400" />
               </div>
             </div>
           </div>
 
-          <!-- MODE B: STUDIO AI RENDER (HUGGING FACE GRADIO IDM-VTON) -->
+          <!-- MODE 2: STUDIO HD AI RENDER (GRADIO IDM-VTON BLOB PIPELINE) -->
           <div id="viewport-studio" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-charcoal/10 space-y-5">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
               <div>
-                <span class="text-[10px] uppercase tracking-widest text-aubergine font-bold">Hugging Face Gradio Client • yisol/IDM-VTON</span>
-                <h3 class="text-lg font-bold text-charcoal">Studio AI Photorealistic Render (HD)</h3>
+                <span class="text-[10px] uppercase tracking-widest text-aubergine font-bold">Mode 2 • Gradio Client (`yisol/IDM-VTON` &amp; `Kolors-Virtual-Try-On`)</span>
+                <h3 class="text-lg font-bold text-charcoal">Studio HD Photorealistic AI Render</h3>
               </div>
-              <span class="text-xs bg-aubergine/10 text-aubergine px-3 py-1 rounded-full font-semibold">Rp 0 / Free API Integration</span>
+              <span class="text-xs bg-lilac/50 text-aubergine px-3 py-1 rounded-full font-bold">Blob JPEG Pipeline</span>
             </div>
 
-            <!-- Selected Pair Summary -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
-                <div class="text-xs font-bold uppercase text-gray-500">Target Tubuh / Model (`human_img`)</div>
-                <div id="studio-human-label" class="text-xs font-semibold text-charcoal truncate">Man_wearing_white_t-shirt_20261014224614.jpg</div>
+                <div class="text-xs font-bold uppercase text-gray-500">1. Sumber Tubuh (`humanBlob`)</div>
+                <div id="studio-human-label" class="text-xs font-semibold text-charcoal truncate"></div>
                 <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                  <img id="studio-human-preview" src="" alt="Human Target" class="max-h-full object-contain" />
+                  <img id="studio-human-preview" src="" referrerpolicy="no-referrer" alt="Human Target" class="max-h-full object-contain" />
                 </div>
               </div>
 
               <div class="p-4 rounded-xl bg-offwhite border border-gray-200 space-y-2">
-                <div class="text-xs font-bold uppercase text-gray-500">Pakaian Pilihan (`garm_img`)</div>
-                <div id="studio-garment-label" class="text-xs font-semibold text-charcoal truncate">Separate_t-shirt_front_and_back_20261014224620.jpg</div>
+                <div class="text-xs font-bold uppercase text-gray-500">2. Pakaian Pilihan (`garmentBlob`)</div>
+                <div id="studio-garment-label" class="text-xs font-semibold text-charcoal truncate"></div>
                 <div class="h-44 bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-                  <img id="studio-garment-preview" src="" alt="Garment Target" class="max-h-full object-contain" />
+                  <img id="studio-garment-preview" src="" referrerpolicy="no-referrer" alt="Garment Target" class="max-h-full object-contain" />
                 </div>
               </div>
             </div>
 
-            <!-- Prompt & Action -->
             <div class="flex flex-col sm:flex-row gap-3">
               <input id="vton-prompt" type="text" value="High-end luxury streetwear t-shirt, studio lighting, photorealistic cotton texture" class="flex-1 px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
               <button onclick="runStudioVTON()" id="btn-run-vton" class="px-6 py-2.5 bg-aubergine hover:bg-aubergineLight text-offwhite text-xs font-bold rounded-xl transition shrink-0">
-                Jahit Pakaian dengan AI (IDM-VTON)
+                Tangkap Blob &amp; Render AI (IDM-VTON)
               </button>
             </div>
 
-            <!-- Output Container -->
-            <div id="vton-result-box" class="p-4 rounded-xl bg-offwhite border border-dashed border-aubergine/30 text-center space-y-3">
-              <p id="vton-status-text" class="text-xs text-gray-600">Pilih kombinasi Foto Model dan Pakaian dari daftar di sebelah kiri, lalu klik tombol render di atas.</p>
-              <canvas id="vton-output-canvas" width="600" height="450" class="mx-auto rounded-lg shadow-sm max-h-80 object-contain hidden"></canvas>
+            <div id="vton-result-box" class="p-5 rounded-xl bg-offwhite border border-dashed border-aubergine/30 text-center space-y-3">
+              <div id="vton-spinner" class="hidden mx-auto w-7 h-7 border-3 border-aubergine border-t-transparent rounded-full animate-spin"></div>
+              <p id="vton-status-text" class="text-xs text-gray-600">Klik tombol di atas untuk mengonversi frame kamera/model dan gambar pakaian menjadi Blob, lalu mengirimkannya ke Hugging Face Space.</p>
+              <div id="vton-composite-preview" class="hidden relative mx-auto w-72 h-96 bg-charcoal rounded-xl overflow-hidden shadow-lg border border-aubergine/30">
+                <img id="vton-out-model" src="" referrerpolicy="no-referrer" class="w-full h-full object-contain" />
+                <img id="vton-out-garment" src="" referrerpolicy="no-referrer" class="absolute top-[24%] left-[25%] w-[50%] h-[46%] object-contain drop-shadow-2xl" />
+              </div>
             </div>
           </div>
 
@@ -300,52 +302,168 @@
     </section>
 
     <!-- ==========================================
-         TAB 2: CULINARY & SMART QR (CROSS-RETAIL)
+         TAB 2: CULINARY CRAFT & SMART QR ORIGIN
          ========================================== -->
     <section id="tab-culinary" class="hidden space-y-8">
       <div class="border-b border-charcoal/10 pb-6">
-        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">3-in-1 Lifestyle Ecosystem</span>
-        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Culinary &amp; Smart QR Cross-Pollination</h2>
-        <p class="text-sm text-gray-600 mt-1">Integrasi produk F&amp;B premium di Ranch Market &amp; Lai Lai dengan diskon bundling lini apparel eksklusif ZETRAND.</p>
+        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 2 • F&amp;B Catalog &amp; Batch Tracker</span>
+        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Culinary Craft &amp; Smart QR Origin</h2>
+        <p class="text-sm text-gray-600 mt-1">Katalog F&amp;B eksklusif ZETRAND di Ranch Market &amp; Lai Lai lengkap dengan pelacak kode batch produksi dan pasangan outfit.</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Smart QR Interactive Simulator -->
-        <div class="bg-aubergine text-offwhite p-6 rounded-2xl shadow-md space-y-4">
-          <span class="text-[10px] uppercase tracking-widest text-purple-300 font-semibold">Smart Packaging Trigger</span>
-          <h3 class="brand-serif text-2xl font-bold">Simulasi Scan QR Kemasan F&amp;B</h3>
-          <p class="text-xs text-gray-300 leading-relaxed">Konsumen yang memindai Smart QR pada kemasan produk makanan ZETRAND di Ranch Market atau Lai Lai langsung mendapatkan akses katalog &amp; kode voucher bundling.</p>
-          <div class="p-4 bg-white/10 rounded-xl space-y-2 text-xs">
-            <div class="flex justify-between"><span>Lokasi Ritel:</span><span class="font-bold">Ranch Market / Lai Lai</span></div>
-            <div class="flex justify-between"><span>Reward Bundling:</span><span class="font-bold text-purple-200">Diskon 25% Lini Fashion</span></div>
+      <!-- Batch & Freshness Tracker Interactive Box -->
+      <div class="bg-aubergine text-offwhite p-6 rounded-2xl shadow-md grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-7 space-y-2">
+          <span class="text-[10px] uppercase tracking-widest text-lilac font-bold">Batch &amp; Freshness Tracker</span>
+          <h3 class="brand-serif text-2xl font-bold">Verifikasi Keaslian &amp; Kualitas Batch Produksi</h3>
+          <p class="text-xs text-gray-300">Masukkan kode batch pada kemasan Ranch Market atau Lai Lai untuk memeriksa tanggal produksi, standar QC, dan pasangan koleksi pakaian.</p>
+        </div>
+        <div class="lg:col-span-5 space-y-2">
+          <div class="flex gap-2">
+            <input id="batch-input" type="text" value="ZT-BATCH-881" class="flex-1 px-3.5 py-2.5 text-xs rounded-xl bg-white/10 border border-lilac/30 text-offwhite focus:outline-none" />
+            <button onclick="checkBatchFreshness()" class="px-5 py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-xl hover:bg-white transition shrink-0">Cek Batch</button>
           </div>
-          <button onclick="claimSmartQRVoucher()" class="w-full py-3 bg-offwhite text-aubergine font-bold text-xs rounded-xl hover:bg-purple-100 transition">
-            Simulasikan Scan QR &amp; Klaim Bundling
+          <div id="batch-result" class="text-[11px] text-lilac font-mono">Status: Siap memverifikasi kode batch kemasan.</div>
+        </div>
+      </div>
+
+      <!-- F&B Catalog Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- SKU 1 -->
+        <div class="bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-aubergine text-offwhite">Ranch Market Exclusive</span>
+              <span class="text-[11px] font-mono text-gray-500">Batch: #ZT-881</span>
+            </div>
+            <h4 class="brand-serif text-2xl font-bold text-charcoal">ZETRAND Black Truffle Potato Crisps</h4>
+            <p class="text-xs text-gray-600">Keripik kentang artisan dengan minyak truffle hitam Italia. Dipasangkan secara tematik dengan Dual-Side Signature Tee.</p>
+            <div class="p-3 bg-offwhite rounded-xl text-[11px] space-y-1 border border-gray-200">
+              <div class="flex justify-between"><span>Tanggal Produksi:</span><span class="font-semibold">14 Okt 2026</span></div>
+              <div class="flex justify-between"><span>Jaminan Kualitas:</span><span class="font-semibold text-green-700">100% Passed QC</span></div>
+              <div class="flex justify-between"><span>Pasangan Outfit:</span><span class="font-semibold text-aubergine">Separate T-Shirt (Front &amp; Back)</span></div>
+            </div>
+          </div>
+          <button onclick="selectGarmentAndJump(0)" class="w-full py-3 bg-charcoal hover:bg-aubergine text-offwhite text-xs font-bold rounded-xl transition">
+            Coba Outfit Pasangannya
           </button>
-          <div id="qr-voucher-output" class="hidden p-3 bg-black/40 rounded-lg text-center text-xs font-mono text-purple-200 border border-purple-400/30"></div>
         </div>
 
-        <!-- F&B Partner SKU Cards -->
-        <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div class="bg-white p-6 rounded-2xl border border-charcoal/10 flex flex-col justify-between space-y-4">
-            <div class="space-y-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-aubergine/10 text-aubergine">Ranch Market Exclusive SKU</span>
-              <h4 class="font-bold text-lg text-charcoal">ZETRAND Artisanal Truffle Chips</h4>
-              <p class="text-xs text-gray-600">Dilengkapi Smart QR pada bagian belakang kemasan yang membuka akses Virtual Try-On koleksi Graffiti Tee.</p>
+        <!-- SKU 2 -->
+        <div class="bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-aubergine text-offwhite">Lai Lai Market Exclusive</span>
+              <span class="text-[11px] font-mono text-gray-500">Batch: #ZT-882</span>
             </div>
-            <button onclick="switchTab('tryon')" class="w-full py-2.5 border border-charcoal text-charcoal hover:bg-charcoal hover:text-offwhite text-xs font-semibold rounded-xl transition">
-              Buka Virtual Try-On Terkait
-            </button>
+            <h4 class="brand-serif text-2xl font-bold text-charcoal">ZETRAND Botanical Cold Brew Elixir</h4>
+            <p class="text-xs text-gray-600">Kopi cold brew arabika single-origin dengan infusi bunga elderberry. Dipasangkan dengan koleksi Graffiti Print Tee.</p>
+            <div class="p-3 bg-offwhite rounded-xl text-[11px] space-y-1 border border-gray-200">
+              <div class="flex justify-between"><span>Tanggal Produksi:</span><span class="font-semibold">14 Okt 2026</span></div>
+              <div class="flex justify-between"><span>Jaminan Kualitas:</span><span class="font-semibold text-green-700">Nitrogen Sealed Fresh</span></div>
+              <div class="flex justify-between"><span>Pasangan Outfit:</span><span class="font-semibold text-aubergine">Cotton T-Shirt Graffiti Print</span></div>
+            </div>
+          </div>
+          <button onclick="selectGarmentAndJump(1)" class="w-full py-3 bg-charcoal hover:bg-aubergine text-offwhite text-xs font-bold rounded-xl transition">
+            Coba Outfit Pasangannya
+          </button>
+        </div>
+
+        <!-- SKU 3 -->
+        <div class="bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-aubergine text-offwhite">Ranch &amp; Lai Lai Flagship</span>
+              <span class="text-[11px] font-mono text-gray-500">Batch: #ZT-883</span>
+            </div>
+            <h4 class="brand-serif text-2xl font-bold text-charcoal">ZETRAND Matcha Ceremonial Tart</h4>
+            <p class="text-xs text-gray-600">Tart matcha Uji Jepang kualitas seremonial dengan lapisan cokelat hitam pekat dan akses VIP Lookbook.</p>
+            <div class="p-3 bg-offwhite rounded-xl text-[11px] space-y-1 border border-gray-200">
+              <div class="flex justify-between"><span>Tanggal Produksi:</span><span class="font-semibold">14 Okt 2026</span></div>
+              <div class="flex justify-between"><span>Jaminan Kualitas:</span><span class="font-semibold text-green-700">Chilled Supply Chain</span></div>
+              <div class="flex justify-between"><span>Pasangan Outfit:</span><span class="font-semibold text-aubergine">Separate T-Shirt (Back View)</span></div>
+            </div>
+          </div>
+          <button onclick="selectGarmentAndJump(0)" class="w-full py-3 bg-charcoal hover:bg-aubergine text-offwhite text-xs font-bold rounded-xl transition">
+            Coba Outfit Pasangannya
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: ZETRAND RUNWAY & TASTE REELS (9:16)
+         ========================================== -->
+    <section id="tab-reels" class="hidden space-y-8">
+      <div class="border-b border-charcoal/10 pb-6">
+        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 3 • Vertical Video &amp; Lookbook Feed (9:16)</span>
+        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">ZETRAND Runway &amp; Taste Reels</h2>
+        <p class="text-sm text-gray-600 mt-1">Jelajahi kampanye vertikal 9:16 yang menggabungkan Fashion dan F&amp;B lengkap dengan Floating Shoppable Card.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Reel Card 1 -->
+        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-xl aspect-[9/16] max-h-[560px] relative flex flex-col justify-between p-5 border border-aubergine">
+          <img src="https://drive.google.com/thumbnail?id=1PgnnYkb7ZMYsVWASw2AjvMWXNiffIUrt&sz=w1000" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-65" alt="Reel 1" />
+          <div class="relative z-10 flex justify-between items-center">
+            <span class="text-[10px] bg-aubergine/90 text-lilac px-3 py-1 rounded-full font-bold">Campaign #01</span>
+            <span class="text-[10px] bg-black/60 px-2.5 py-1 rounded-full">Ranch Market Kemang &amp; Pondok Indah</span>
           </div>
 
-          <div class="bg-white p-6 rounded-2xl border border-charcoal/10 flex flex-col justify-between space-y-4">
-            <div class="space-y-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-aubergine/10 text-aubergine">Lai Lai Premium Market SKU</span>
-              <h4 class="font-bold text-lg text-charcoal">ZETRAND Signature Cold Brew</h4>
-              <p class="text-xs text-gray-600">Setiap pembelian memberikan potongan langsung untuk lini pakaian desainer melalui verifikasi Smart QR.</p>
+          <!-- Floating Shoppable Card -->
+          <div class="relative z-10 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-lilac uppercase font-bold tracking-wider">Floating Shoppable Card</span>
+              <span class="text-[10px] text-gray-300">Truffle Crisps x Signature Tee</span>
             </div>
-            <button onclick="switchTab('tryon')" class="w-full py-2.5 border border-charcoal text-charcoal hover:bg-charcoal hover:text-offwhite text-xs font-semibold rounded-xl transition">
-              Coba Bundling Apparel Sekarang
+            <h4 class="font-bold text-sm text-offwhite">ZETRAND Separate T-Shirt (Front &amp; Back)</h4>
+            <p class="text-[11px] text-gray-300">Tersedia bersama produk F&amp;B di Ranch Market.</p>
+            <button onclick="selectGarmentAndJump(0)" class="w-full py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition">
+              Try-On Baju di Video Ini
+            </button>
+          </div>
+        </div>
+
+        <!-- Reel Card 2 -->
+        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-xl aspect-[9/16] max-h-[560px] relative flex flex-col justify-between p-5 border border-aubergine">
+          <img src="https://drive.google.com/thumbnail?id=1jUZinUvPpGJYhZQoOgSrGGZKPzJodVVM&sz=w1000" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-65" alt="Reel 2" />
+          <div class="relative z-10 flex justify-between items-center">
+            <span class="text-[10px] bg-aubergine/90 text-lilac px-3 py-1 rounded-full font-bold">Campaign #02</span>
+            <span class="text-[10px] bg-black/60 px-2.5 py-1 rounded-full">Lai Lai Market Malang &amp; Surabaya</span>
+          </div>
+
+          <!-- Floating Shoppable Card -->
+          <div class="relative z-10 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-lilac uppercase font-bold tracking-wider">Floating Shoppable Card</span>
+              <span class="text-[10px] text-gray-300">Cold Brew x Graffiti Tee</span>
+            </div>
+            <h4 class="font-bold text-sm text-offwhite">Cotton T-Shirt with Graffiti Print</h4>
+            <p class="text-[11px] text-gray-300">Beli minuman pendampingnya di Lai Lai Premium Market.</p>
+            <button onclick="selectGarmentAndJump(1)" class="w-full py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition">
+              Try-On Baju di Video Ini
+            </button>
+          </div>
+        </div>
+
+        <!-- Reel Card 3 -->
+        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-xl aspect-[9/16] max-h-[560px] relative flex flex-col justify-between p-5 border border-aubergine">
+          <img src="https://drive.google.com/thumbnail?id=1mwbuCBQyrecieraQ4dskWbhY1v-2-L-t&sz=w1000" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-65" alt="Reel 3" />
+          <div class="relative z-10 flex justify-between items-center">
+            <span class="text-[10px] bg-aubergine/90 text-lilac px-3 py-1 rounded-full font-bold">Campaign #03</span>
+            <span class="text-[10px] bg-black/60 px-2.5 py-1 rounded-full">All Partner Supermarkets</span>
+          </div>
+
+          <!-- Floating Shoppable Card -->
+          <div class="relative z-10 bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/15 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-lilac uppercase font-bold tracking-wider">Floating Shoppable Card</span>
+              <span class="text-[10px] text-gray-300">Matcha Tart x Studio Edition</span>
+            </div>
+            <h4 class="font-bold text-sm text-offwhite">ZETRAND Studio Essential Collection</h4>
+            <p class="text-[11px] text-gray-300">Scan QR kemasan di Ranch Market &amp; Lai Lai untuk diskon 25%.</p>
+            <button onclick="selectGarmentAndJump(0)" class="w-full py-2.5 bg-lilac text-aubergine font-bold text-xs rounded-lg hover:bg-white transition">
+              Try-On Baju di Video Ini
             </button>
           </div>
         </div>
@@ -353,49 +471,74 @@
     </section>
 
     <!-- ==========================================
-         TAB 3: FASHION & FOOD REELS (9:16 FEED)
+         TAB 4: VIP QR CLAIM & LOYALTY (CRM DB)
          ========================================== -->
-    <section id="tab-reels" class="hidden space-y-8">
+    <section id="tab-vip" class="hidden space-y-8">
       <div class="border-b border-charcoal/10 pb-6">
-        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Pop-Culture &amp; Hype-Driven Feed</span>
-        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">Fashion &amp; Food Reels (9:16)</h2>
-        <p class="text-sm text-gray-600 mt-1">Pengalaman jelajah sinematik dengan integrasi tombol langsung menuju AI Virtual Try-On.</p>
+        <span class="text-xs uppercase tracking-widest text-aubergine font-bold">Tab 4 • Customer Data Capture &amp; Loyalty</span>
+        <h2 class="brand-serif text-3xl md:text-4xl font-bold text-charcoal mt-1">VIP QR Claim &amp; Loyalty Database</h2>
+        <p class="text-sm text-gray-600 mt-1">Klaim kode unik kemasan makanan Ranch Market &amp; Lai Lai untuk mengumpulkan poin royalti dan diskon fashion.</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Reel 1 -->
-        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-lg aspect-[9/16] max-h-[540px] relative flex flex-col justify-between p-5 border border-aubergine/40">
-          <div class="flex justify-between items-center z-10">
-            <span class="text-[10px] bg-aubergine px-3 py-1 rounded-full font-semibold">Lookbook Drop #01</span>
-            <span class="text-xs text-gray-300">9:16 Vertical</span>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Form Input VIP Claim -->
+        <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm space-y-4">
+          <h3 class="font-bold text-sm uppercase tracking-wider text-aubergine">Formulir Klaim Smart QR Kemasan</h3>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Kode Unik Kemasan F&amp;B</label>
+            <input id="vip-code" type="text" placeholder="Contoh: ZT-QR-2026-991" value="ZT-QR-2026-991" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
           </div>
-          <div class="my-auto text-center space-y-2 z-10">
-            <p class="brand-serif text-2xl italic text-purple-200">"Street Luxury Meets Artisanal Taste"</p>
-            <p class="text-xs text-gray-400">Menampilkan: Separate T-Shirt Front &amp; Back</p>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Nama Lengkap Pelanggan</label>
+            <input id="vip-name" type="text" placeholder="Masukkan nama lengkap..." class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
           </div>
-          <div class="space-y-3 z-10 bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
-            <div class="text-xs font-bold">ZETRAND Dual-Side Signature Tee</div>
-            <button onclick="selectGarmentAndJump(0)" class="w-full py-2.5 bg-offwhite text-aubergine font-bold text-xs rounded-lg hover:bg-purple-100 transition">
-              Shop the Look / Try-On Sekarang
-            </button>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Nomor WhatsApp Aktif</label>
+            <input id="vip-wa" type="tel" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine" />
           </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Lokasi Pembelian Supermarket</label>
+            <select id="vip-location" class="w-full px-3.5 py-2.5 text-xs border border-gray-300 rounded-xl focus:outline-none focus:border-aubergine bg-white">
+              <option value="Ranch Market">Ranch Market</option>
+              <option value="Lai Lai Premium Market">Lai Lai Premium Market</option>
+              <option value="ZETRAND Pop-Up Booth">ZETRAND Pop-Up Booth</option>
+            </select>
+          </div>
+
+          <button onclick="submitVipClaim()" class="w-full py-3 bg-aubergine hover:bg-aubergineLight text-offwhite font-bold text-xs rounded-xl transition">
+            Simpan Klaim &amp; Aktifkan Voucher Diskon 25%
+          </button>
+
+          <div id="vip-feedback" class="hidden p-3 rounded-xl bg-lilac/40 text-aubergine text-xs font-semibold"></div>
         </div>
 
-        <!-- Reel 2 -->
-        <div class="bg-charcoal text-offwhite rounded-2xl overflow-hidden shadow-lg aspect-[9/16] max-h-[540px] relative flex flex-col justify-between p-5 border border-aubergine/40">
-          <div class="flex justify-between items-center z-10">
-            <span class="text-[10px] bg-aubergine px-3 py-1 rounded-full font-semibold">Pop-Culture Series</span>
-            <span class="text-xs text-gray-300">9:16 Vertical</span>
+        <!-- Tabel Data Tersimpan (LocalStorage Database) -->
+        <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-charcoal/10 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm uppercase tracking-wider text-charcoal">Database Klaim Pelanggan (LocalStorage)</h3>
+              <p class="text-xs text-gray-500">Data tersimpan secara persisten di browser untuk analisis CRM ZETRAND</p>
+            </div>
+            <button onclick="clearVipDatabase()" class="text-[11px] text-red-600 hover:underline font-medium">Reset Data</button>
           </div>
-          <div class="my-auto text-center space-y-2 z-10">
-            <p class="brand-serif text-2xl italic text-purple-200">"Graffiti Couture Edition"</p>
-            <p class="text-xs text-gray-400">Menampilkan: Cotton T-Shirt with Graffiti Print</p>
-          </div>
-          <div class="space-y-3 z-10 bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
-            <div class="text-xs font-bold">ZETRAND Graffiti Print Cotton Tee</div>
-            <button onclick="selectGarmentAndJump(1)" class="w-full py-2.5 bg-offwhite text-aubergine font-bold text-xs rounded-lg hover:bg-purple-100 transition">
-              Shop the Look / Try-On Sekarang
-            </button>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-gray-200 text-gray-500 uppercase text-[10px]">
+                  <th class="py-2.5 px-2">Kode QR</th>
+                  <th class="py-2.5 px-2">Nama</th>
+                  <th class="py-2.5 px-2">WhatsApp</th>
+                  <th class="py-2.5 px-2">Lokasi Ritel</th>
+                  <th class="py-2.5 px-2">Poin</th>
+                </tr>
+              </thead>
+              <tbody id="vip-table-body" class="divide-y divide-gray-100"></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -403,112 +546,81 @@
 
   </main>
 
-  <!-- ==========================================
-       JAVASCRIPT LOGIC: ASSETS, UPLOAD, MEDIAPIPE & GRADIO VTON
-       ========================================== -->
+  <!-- GRADIO CLIENT ES6 MODULE -->
   <script type="module">
     import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
     window.GradioClient = Client;
   </script>
 
+  <!-- CORE APPLICATION LOGIC -->
   <script>
-    // Helper konversi link Google Drive ke direct view URL jika user menempelkan link share Drive
+    function driveUrl(fileId) {
+      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
+    }
+
     function resolveImageSource(inputUrlOrPath) {
       if (!inputUrlOrPath) return '';
       const trimmed = inputUrlOrPath.trim();
-      const match = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) {
-        return `https://lh3.googleusercontent.com/d/${match[1]}`;
-      }
+      const match = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) return driveUrl(match[1]);
       return trimmed;
     }
 
-    // Fallback generator kanvas jika file gambar lokal belum ditempatkan di folder yang sama
-    function createFallbackDataURL(title, subtitle, bgColor, accentColor) {
-      const c = document.createElement('canvas');
-      c.width = 500;
-      c.height = 500;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, 500, 500);
-
-      // Siluet Kaos / Model sederhana agar visual langsung tampil elegan
-      ctx.fillStyle = accentColor;
-      ctx.beginPath();
-      ctx.roundRect(90, 90, 320, 320, 24);
-      ctx.fill();
-
-      ctx.fillStyle = '#FAF9F6';
-      ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(title, 250, 235);
-
-      ctx.font = '13px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = '#E5E7EB';
-      ctx.fillText(subtitle, 250, 265);
-      return c.toDataURL('image/png');
-    }
-
-    // 1. DAFTAR ASET PAKAIAN (GARMENT LIST) DARI GOOGLE DRIVE BOS ZEN
+    // 1. ASET GARMENT DARI GOOGLE DRIVE BOS ZEN
     const garmentCatalog = [
       {
         id: 'garm-1',
         name: 'Separate T-Shirt (Front & Back)',
         fileName: 'Separate_t-shirt_front_and_back_20261014224620.jpg',
-        src: 'Separate_t-shirt_front_and_back_20261014224620.jpg',
-        fallback: createFallbackDataURL('ZETRAND SIGNATURE TEE', 'Separate_t-shirt_front_and_back_20261014224620.jpg', '#2E1035', '#461B50'),
-        isDualSide: true
+        driveId: '1qIKx8SJQlOvbjiuH0DwwT3weBmv9mVXo',
+        src: driveUrl('1qIKx8SJQlOvbjiuH0DwwT3weBmv9mVXo')
       },
       {
         id: 'garm-2',
         name: 'Cotton T-Shirt with Graffiti Print',
         fileName: 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg',
-        src: 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg',
-        fallback: createFallbackDataURL('ZETRAND GRAFFITI TEE', 'Cotton_t-shirt_with_graffiti_print_20261014224608.jpg', '#18181B', '#2E1035'),
-        isDualSide: false
+        driveId: '1v-EEAFIkVnt5wrmcPiro2JZ5yNVvsDzB',
+        src: driveUrl('1v-EEAFIkVnt5wrmcPiro2JZ5yNVvsDzB')
       }
     ];
 
-    // 2. DAFTAR ASET FOTO MODEL / STUDIO PRESET DARI GOOGLE DRIVE BOS ZEN
+    // 2. ASET MODEL PRESET DARI GOOGLE DRIVE BOS ZEN
     const modelCatalog = [
       {
         id: 'mod-1',
         name: 'Man Wearing White T-Shirt',
         fileName: 'Man_wearing_white_t-shirt_20261014224614.jpg',
-        src: 'Man_wearing_white_t-shirt_20261014224614.jpg',
-        fallback: createFallbackDataURL('MODEL: WHITE T-SHIRT', 'Man_wearing_white_t-shirt_20261014224614.jpg', '#27272A', '#3F3F46')
+        driveId: '1mwbuCBQyrecieraQ4dskWbhY1v-2-L-t',
+        src: driveUrl('1mwbuCBQyrecieraQ4dskWbhY1v-2-L-t')
       },
       {
         id: 'mod-2',
         name: 'Man Posing in Studio I',
         fileName: 'Man_posing_in_studio_20261014224612.jpg',
-        src: 'Man_posing_in_studio_20261014224612.jpg',
-        fallback: createFallbackDataURL('STUDIO POSE I', 'Man_posing_in_studio_20261014224612.jpg', '#18181B', '#2E1035')
+        driveId: '1PgnnYkb7ZMYsVWASw2AjvMWXNiffIUrt',
+        src: driveUrl('1PgnnYkb7ZMYsVWASw2AjvMWXNiffIUrt')
       },
       {
         id: 'mod-3',
         name: 'Man Posing in Studio II',
         fileName: 'Man_posing_in_studio_20261014224617.jpg',
-        src: 'Man_posing_in_studio_20261014224617.jpg',
-        fallback: createFallbackDataURL('STUDIO POSE II', 'Man_posing_in_studio_20261014224617.jpg', '#2E1035', '#18181B')
+        driveId: '1jUZinUvPpGJYhZQoOgSrGGZKPzJodVVM',
+        src: driveUrl('1jUZinUvPpGJYhZQoOgSrGGZKPzJodVVM')
       }
     ];
 
     let selectedGarmentIndex = 0;
     let selectedModelIndex = 0;
-    let garmentCropMode = 'front'; // 'full' | 'front' | 'back'
+    let garmentCropMode = 'full';
     let overlayScale = 1.0;
     let overlayOffsetY = 0;
     let overlayOpacity = 0.95;
+    let currentShoulderAngleDeg = 0;
+    let isMultiplyBlend = false;
     let isWebcamActive = false;
     let cameraInstance = null;
+    let poseInstance = null;
 
-    const activeGarmentImg = new Image();
-    const activeModelImg = new Image();
-    activeGarmentImg.crossOrigin = 'anonymous';
-    activeModelImg.crossOrigin = 'anonymous';
-
-    // Render Garment & Model Lists
     function renderLists() {
       const gContainer = document.getElementById('garment-list');
       gContainer.innerHTML = '';
@@ -518,12 +630,12 @@
         card.className = `p-2.5 rounded-xl border cursor-pointer transition ${isSelected ? 'border-aubergine bg-aubergine/5 ring-2 ring-aubergine' : 'border-gray-200 hover:border-aubergine/50'}`;
         card.onclick = () => {
           selectedGarmentIndex = idx;
-          loadSelectedImages();
+          updateStageImages();
           renderLists();
         };
         card.innerHTML = `
           <div class="h-28 bg-offwhite rounded-lg overflow-hidden mb-2 flex items-center justify-center">
-            <img src="${item.src}" onerror="this.onerror=null;this.src='${item.fallback}';" alt="${item.name}" class="max-h-full object-contain" />
+            <img src="${item.src}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${item.fileName}';" alt="${item.name}" class="max-h-full object-contain" />
           </div>
           <div class="text-xs font-bold text-charcoal truncate">${item.name}</div>
           <div class="text-[10px] text-gray-500 truncate">${item.fileName}</div>
@@ -539,12 +651,12 @@
         card.className = `p-2 rounded-xl border cursor-pointer transition ${isSelected ? 'border-aubergine bg-aubergine/5 ring-2 ring-aubergine' : 'border-gray-200 hover:border-aubergine/50'}`;
         card.onclick = () => {
           selectedModelIndex = idx;
-          loadSelectedImages();
+          updateStageImages();
           renderLists();
         };
         card.innerHTML = `
           <div class="h-24 bg-offwhite rounded-lg overflow-hidden mb-1.5 flex items-center justify-center">
-            <img src="${item.src}" onerror="this.onerror=null;this.src='${item.fallback}';" alt="${item.name}" class="max-h-full object-contain" />
+            <img src="${item.src}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${item.fileName}';" alt="${item.name}" class="max-h-full object-contain" />
           </div>
           <div class="text-[11px] font-bold text-charcoal truncate">${item.name}</div>
           <div class="text-[9px] text-gray-500 truncate">${item.fileName}</div>
@@ -555,92 +667,88 @@
       document.getElementById('model-count-badge').textContent = `${modelCatalog.length} Preset`;
     }
 
-    function loadSelectedImages() {
+    function updateStageImages() {
       const gItem = garmentCatalog[selectedGarmentIndex];
       const mItem = modelCatalog[selectedModelIndex];
 
-      activeGarmentImg.onerror = () => { activeGarmentImg.src = gItem.fallback; };
-      activeGarmentImg.onload = () => {
-        document.getElementById('studio-garment-preview').src = activeGarmentImg.src;
-        document.getElementById('studio-garment-label').textContent = gItem.fileName;
-        if (!isWebcamActive) drawPresetComposite();
-      };
-      activeGarmentImg.src = gItem.src;
+      const stageModel = document.getElementById('stage-model-img');
+      const stageGarment = document.getElementById('stage-garment-img');
 
-      activeModelImg.onerror = () => { activeModelImg.src = mItem.fallback; };
-      activeModelImg.onload = () => {
-        document.getElementById('studio-human-preview').src = activeModelImg.src;
-        document.getElementById('studio-human-label').textContent = mItem.fileName;
-        if (!isWebcamActive) drawPresetComposite();
-      };
-      activeModelImg.src = mItem.src;
+      stageModel.onerror = () => { stageModel.src = mItem.fileName; };
+      stageModel.src = mItem.src;
+
+      stageGarment.onerror = () => { stageGarment.src = gItem.fileName; };
+      stageGarment.src = gItem.src;
+
+      document.getElementById('studio-human-preview').src = mItem.src;
+      document.getElementById('studio-human-label').textContent = mItem.fileName;
+      document.getElementById('studio-garment-preview').src = gItem.src;
+      document.getElementById('studio-garment-label').textContent = gItem.fileName;
+
+      applyStageTransforms();
     }
 
-    // Fungsi Tambah / Upload Item Baru ke dalam List (Mendukung File Lokal & Link Google Drive)
     function addNewItemToList() {
-      const titleInput = document.getElementById('upload-title').value.trim();
-      const category = document.getElementById('upload-category').value;
-      const fileInput = document.getElementById('upload-file');
-      const driveInput = document.getElementById('upload-drive-url').value.trim();
+      try {
+        const titleInput = document.getElementById('upload-title').value.trim();
+        const category = document.getElementById('upload-category').value;
+        const fileInput = document.getElementById('upload-file');
+        const driveInput = document.getElementById('upload-drive-url').value.trim();
 
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          pushItemToCatalog(category, titleInput || file.name, file.name, e.target.result);
-          fileInput.value = '';
+        if (fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            pushItemToCatalog(category, titleInput || file.name, file.name, e.target.result);
+            fileInput.value = '';
+            document.getElementById('upload-title').value = '';
+          };
+          reader.readAsDataURL(file);
+        } else if (driveInput) {
+          const resolvedUrl = resolveImageSource(driveInput);
+          const displayTitle = titleInput || 'Uploaded Drive Asset';
+          pushItemToCatalog(category, displayTitle, resolvedUrl, resolvedUrl);
+          document.getElementById('upload-drive-url').value = '';
           document.getElementById('upload-title').value = '';
-        };
-        reader.readAsDataURL(file);
-      } else if (driveInput) {
-        const resolvedUrl = resolveImageSource(driveInput);
-        const displayTitle = titleInput || 'Uploaded Drive Asset';
-        pushItemToCatalog(category, displayTitle, resolvedUrl, resolvedUrl);
-        document.getElementById('upload-drive-url').value = '';
-        document.getElementById('upload-title').value = '';
-      } else {
-        alert('Silakan pilih file gambar dari perangkat atau tempel link Google Drive terlebih dahulu.');
+        }
+      } catch (err) {
+        console.error('Upload error:', err);
       }
     }
 
     function pushItemToCatalog(category, name, fileName, srcUrl) {
-      const fallbackImg = createFallbackDataURL(name.toUpperCase(), fileName, '#2E1035', '#18181B');
       if (category === 'garment') {
-        garmentCatalog.unshift({
-          id: 'garm-' + Date.now(),
-          name: name,
-          fileName: fileName,
-          src: srcUrl,
-          fallback: fallbackImg,
-          isDualSide: false
-        });
+        garmentCatalog.unshift({ id: 'garm-' + Date.now(), name, fileName, src: srcUrl });
         selectedGarmentIndex = 0;
       } else {
-        modelCatalog.unshift({
-          id: 'mod-' + Date.now(),
-          name: name,
-          fileName: fileName,
-          src: srcUrl,
-          fallback: fallbackImg
-        });
+        modelCatalog.unshift({ id: 'mod-' + Date.now(), name, fileName, src: srcUrl });
         selectedModelIndex = 0;
       }
       renderLists();
-      loadSelectedImages();
+      updateStageImages();
     }
 
-    // Pilih bagian potongan gambar untuk Separate_t-shirt_front_and_back
     function setGarmentCrop(mode) {
       garmentCropMode = mode;
       ['full', 'front', 'back'].forEach(m => {
         const btn = document.getElementById('crop-' + m);
-        if (m === mode) {
-          btn.className = 'px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white';
-        } else {
-          btn.className = 'px-2 py-1 text-[10px] font-semibold rounded text-charcoal';
-        }
+        btn.className = (m === mode)
+          ? 'px-2 py-1 text-[10px] font-semibold rounded bg-aubergine text-white'
+          : 'px-2 py-1 text-[10px] font-semibold rounded text-charcoal';
       });
-      if (!isWebcamActive) drawPresetComposite();
+      updateGarmentClass();
+    }
+
+    function toggleMultiplyBlend() {
+      isMultiplyBlend = !isMultiplyBlend;
+      const btn = document.getElementById('btn-blend');
+      btn.textContent = `Multiply Blend: ${isMultiplyBlend ? 'ON' : 'OFF'}`;
+      updateGarmentClass();
+    }
+
+    function updateGarmentClass() {
+      const stageGarment = document.getElementById('stage-garment-img');
+      stageGarment.className = `h-full drop-shadow-2xl crop-${garmentCropMode} ${isMultiplyBlend ? 'blend-multiply' : ''}`;
     }
 
     function updateOverlayParams() {
@@ -652,60 +760,20 @@
       document.getElementById('val-offset-y').textContent = overlayOffsetY + ' px';
       document.getElementById('val-opacity').textContent = Math.round(overlayOpacity * 100) + '%';
 
-      if (!isWebcamActive) drawPresetComposite();
+      applyStageTransforms();
     }
 
-    // Helper menggambar pakaian dengan dukungan crop (Depan/Belakang/Full)
-    function drawGarmentOverlay(ctx, targetX, targetY, targetWidth, targetHeight) {
-      if (!activeGarmentImg.complete) return;
-      ctx.save();
-      ctx.globalAlpha = overlayOpacity;
-
-      let sx = 0;
-      let sy = 0;
-      let sw = activeGarmentImg.width;
-      let sh = activeGarmentImg.height;
-
-      if (garmentCropMode === 'front') {
-        sw = activeGarmentImg.width / 2;
-      } else if (garmentCropMode === 'back') {
-        sx = activeGarmentImg.width / 2;
-        sw = activeGarmentImg.width / 2;
-      }
-
-      const scaledW = targetWidth * overlayScale;
-      const scaledH = targetHeight * overlayScale;
-      const drawX = targetX - scaledW / 2;
-      const drawY = targetY + overlayOffsetY;
-
-      ctx.drawImage(activeGarmentImg, sx, sy, sw, sh, drawX, drawY, scaledW, scaledH);
-      ctx.restore();
-    }
-
-    // Gambar komposit saat berada di Mode Foto Preset Model
-    function drawPresetComposite() {
-      const canvas = document.getElementById('ar-canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (activeModelImg.complete) {
-        const scale = Math.min(canvas.width / activeModelImg.width, canvas.height / activeModelImg.height);
-        const w = activeModelImg.width * scale;
-        const h = activeModelImg.height * scale;
-        const x = (canvas.width - w) / 2;
-        const y = (canvas.height - h) / 2;
-        ctx.drawImage(activeModelImg, x, y, w, h);
-
-        // Tempelkan pakaian di area torso model
-        drawGarmentOverlay(ctx, canvas.width / 2, y + h * 0.24, w * 0.52, h * 0.48);
-      }
+    function applyStageTransforms() {
+      const wrapper = document.getElementById('stage-garment-wrapper');
+      const garmentImg = document.getElementById('stage-garment-img');
+      wrapper.style.transform = `translateY(${overlayOffsetY}px) scale(${overlayScale}) rotate(${currentShoulderAngleDeg}deg)`;
+      garmentImg.style.opacity = overlayOpacity;
+      document.getElementById('ar-telemetry').textContent = `Sudut Bahu: ${currentShoulderAngleDeg.toFixed(1)}° | Skala: ${Math.round(overlayScale * 100)}%`;
     }
 
     // ==========================================
-    // GOOGLE MEDIAPIPE POSE REAL-TIME AR (30 FPS)
+    // MODE 1: MEDIAPIPE POSE + MATH.ATAN2 ROTATION
     // ==========================================
-    let poseInstance = null;
-
     function initMediaPipePose() {
       if (poseInstance) return;
       poseInstance = new Pose({
@@ -717,167 +785,4 @@
         minDetectionConfidence: 0.5,
         minTrackingConfidence: 0.5
       });
-      poseInstance.onResults(onPoseResults);
-    }
-
-    function onPoseResults(results) {
-      const canvas = document.getElementById('ar-canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.save();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-
-      if (results.poseLandmarks) {
-        const leftShoulder = results.poseLandmarks[11];
-        const rightShoulder = results.poseLandmarks[12];
-        const leftHip = results.poseLandmarks[23];
-        const rightHip = results.poseLandmarks[24];
-
-        if (leftShoulder && rightShoulder) {
-          const shoulderCenterX = ((leftShoulder.x + rightShoulder.x) / 2) * canvas.width;
-          const shoulderCenterY = ((leftShoulder.y + rightShoulder.y) / 2) * canvas.height;
-          const shoulderDist = Math.hypot(
-            (leftShoulder.x - rightShoulder.x) * canvas.width,
-            (leftShoulder.y - rightShoulder.y) * canvas.height
-          );
-
-          const garmentWidth = shoulderDist * 1.85;
-          let torsoHeight = garmentWidth * 1.15;
-          if (leftHip && rightHip) {
-            const hipCenterY = ((leftHip.y + rightHip.y) / 2) * canvas.height;
-            torsoHeight = Math.max(torsoHeight, (hipCenterY - shoulderCenterY) * 1.35);
-          }
-
-          drawGarmentOverlay(
-            ctx,
-            shoulderCenterX,
-            shoulderCenterY - shoulderDist * 0.25,
-            garmentWidth,
-            torsoHeight
-          );
-        }
-      }
-      ctx.restore();
-    }
-
-    async function startWebcamAR() {
-      try {
-        initMediaPipePose();
-        const videoElement = document.getElementById('ar-video');
-        isWebcamActive = true;
-        document.getElementById('ar-status').textContent = 'Live AR Aktif (30 FPS) • Melacak titik bahu MediaPipe Pose...';
-
-        cameraInstance = new Camera(videoElement, {
-          onFrame: async () => {
-            if (isWebcamActive && poseInstance) {
-              await poseInstance.send({ image: videoElement });
-            }
-          },
-          width: 800,
-          height: 600
-        });
-        await cameraInstance.start();
-      } catch (err) {
-        isWebcamActive = false;
-        document.getElementById('ar-status').textContent = 'Kamera tidak tersedia di perangkat ini. Menampilkan Mode Foto Preset Model.';
-        drawPresetComposite();
-      }
-    }
-
-    function stopWebcamAR() {
-      isWebcamActive = false;
-      if (cameraInstance) {
-        cameraInstance.stop();
-      }
-      document.getElementById('ar-status').textContent = 'Mode Pratinjau Preset Model Aktif';
-      drawPresetComposite();
-    }
-
-    // ==========================================
-    // MODE STUDIO AI RENDER (IDM-VTON VIA GRADIO)
-    // ==========================================
-    async function runStudioVTON() {
-      const statusText = document.getElementById('vton-status-text');
-      const outCanvas = document.getElementById('vton-output-canvas');
-      const promptVal = document.getElementById('vton-prompt').value;
-
-      statusText.textContent = 'Menghubungkan ke Hugging Face Space (yisol/IDM-VTON)... Mohon tunggu 8-15 detik.';
-      outCanvas.classList.remove('hidden');
-
-      // Render high-res studio preview while calling Gradio endpoint
-      const ctx = outCanvas.getContext('2d');
-      ctx.clearRect(0, 0, outCanvas.width, outCanvas.height);
-      const scale = Math.min(outCanvas.width / activeModelImg.width, outCanvas.height / activeModelImg.height);
-      const w = activeModelImg.width * scale;
-      const h = activeModelImg.height * scale;
-      const x = (outCanvas.width - w) / 2;
-      const y = (outCanvas.height - h) / 2;
-      ctx.drawImage(activeModelImg, x, y, w, h);
-      drawGarmentOverlay(ctx, outCanvas.width / 2, y + h * 0.24, w * 0.52, h * 0.48);
-
-      try {
-        if (window.GradioClient) {
-          const app = await window.GradioClient.connect("yisol/IDM-VTON");
-          statusText.textContent = `Terhubung ke IDM-VTON (${promptVal}). Hasil komposit HD ditampilkan di bawah:`;
-        } else {
-          statusText.textContent = 'Pratinjau Studio AI Render selesai dibuat.';
-        }
-      } catch (e) {
-        statusText.textContent = 'Antrean server publik IDM-VTON sedang penuh. Menampilkan hasil Studio Smart Composite HD:';
-      }
-    }
-
-    // Navigasi Multi-Tab & Mode Switcher
-    function switchTab(tabName) {
-      ['tryon', 'culinary', 'reels'].forEach(t => {
-        document.getElementById('tab-' + t).classList.add('hidden');
-        const navBtn = document.getElementById('nav-' + t);
-        navBtn.classList.remove('active-nav');
-        navBtn.classList.add('text-gray-300');
-      });
-      document.getElementById('tab-' + tabName).classList.remove('hidden');
-      const activeBtn = document.getElementById('nav-' + tabName);
-      activeBtn.classList.add('active-nav');
-      activeBtn.classList.remove('text-gray-300');
-    }
-
-    function setTryOnMode(mode) {
-      const btnAr = document.getElementById('btn-mode-ar');
-      const btnStudio = document.getElementById('btn-mode-studio');
-      const viewAr = document.getElementById('viewport-ar');
-      const viewStudio = document.getElementById('viewport-studio');
-
-      if (mode === 'ar') {
-        viewAr.classList.remove('hidden');
-        viewStudio.classList.add('hidden');
-        btnAr.className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition';
-        btnStudio.className = 'px-4 py-2 rounded-lg text-xs font-semibold text-charcoal hover:bg-white/60 transition';
-      } else {
-        viewAr.classList.add('hidden');
-        viewStudio.classList.remove('hidden');
-        btnStudio.className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-aubergine text-offwhite transition';
-        btnAr.className = 'px-4 py-2 rounded-lg text-xs font-semibold text-charcoal hover:bg-white/60 transition';
-      }
-    }
-
-    function selectGarmentAndJump(garmentIndex) {
-      selectedGarmentIndex = garmentIndex;
-      switchTab('tryon');
-      renderLists();
-      loadSelectedImages();
-    }
-
-    function claimSmartQRVoucher() {
-      const box = document.getElementById('qr-voucher-output');
-      box.classList.remove('hidden');
-      box.textContent = 'VOUCHER AKTIF: ZETRAND-RANCH-25 (Diskon 25% Koleksi Graffiti & Signature Tee)';
-    }
-
-    // Inisialisasi saat halaman dimuat
-    window.addEventListener('DOMContentLoaded', () => {
-      renderLists();
-      loadSelectedImages();
-    });
-  </script>
-</body>
-</html>
+      poseInstance.onResults(onPoseResults
